@@ -5,19 +5,21 @@ import _ from 'lodash';
 import { StyleObject } from 'styletron-react';
 import { useStyletron } from 'baseui';
 import { Modal, ModalHeader, ModalBody, ModalFooter, ModalButton, CLOSE_SOURCE, ROLE } from 'baseui/modal';
+import { KIND } from 'baseui/button';
 
 import { useMutation } from 'urql';
 
-import ErrorsList from './ErrorsList';
+import { MODAL_CLOSE_TIMEOUT_MS } from './constants';
 import { EntityActionForm } from './EntityActionForm';
 
 
 type Mode = 'create' | 'update' | 'remove';
 type CancelHandler = (args: {closeSource?: CLOSE_SOURCE[keyof CLOSE_SOURCE] | 'cancelButton'}) => any;
 
-export interface PublicProps<ResultData> {
+export interface PublicProps<ResultData = any> {
   onSubmitted: (data: ResultData) => void;
   onCancel: CancelHandler;
+  typenamesToInvalidate?: string[];
 }
 
 interface Props<MutationVars, ResultData> extends PublicProps<ResultData> {
@@ -34,6 +36,7 @@ interface Props<MutationVars, ResultData> extends PublicProps<ResultData> {
 export function EntityActionDialog<MutationVars = any, ResultData = any>({
   onSubmitted,
   onCancel: onCancelPassed,
+  typenamesToInvalidate,
   mode,
   what,
   formStyle,
@@ -89,23 +92,25 @@ export function EntityActionDialog<MutationVars = any, ResultData = any>({
   const [isOpen, setIsOpen] = React.useState(true);
   const onCancel: CancelHandler = (args) => {
     setIsOpen(false);
-    setTimeout(() => onCancelPassed(args), 500);
+    setTimeout(() => onCancelPassed(args), MODAL_CLOSE_TIMEOUT_MS);
   }
 
   const [{fetching, data, error, extensions}, mutate] = useMutation<ResultData, MutationVars>(query);
 
+  [typenamesToInvalidate] = React.useState(typenamesToInvalidate);
   React.useEffect(() => {
     if (vars) {
       mutate(
-        vars  // comment this to quickly test an error appearance :)
+        vars,  // comment this to quickly test an error appearance :)
+        { additionalTypenames: typenamesToInvalidate }
       );
     }
-  }, [vars, mutate]);
+  }, [vars, mutate, typenamesToInvalidate]);
 
   React.useEffect(() => {
     if (data) {
       setIsOpen(false);
-      setTimeout(() => onSubmitted(data), 500);
+      setTimeout(() => onSubmitted(data), MODAL_CLOSE_TIMEOUT_MS);
     }
   }, [data, onSubmitted]);
 
@@ -128,16 +133,11 @@ export function EntityActionDialog<MutationVars = any, ResultData = any>({
           error={error}
           extensions={extensions}
         />
-        {
-          error
-          ? <ErrorsList error={error} />
-          : null
-        }
       </ModalBody>
 
       <ModalFooter>
         <ModalButton
-          kind='tertiary'
+          kind={KIND.tertiary}
           onClick={() => onCancel({ closeSource: 'cancelButton' })}
         >
           Отмена

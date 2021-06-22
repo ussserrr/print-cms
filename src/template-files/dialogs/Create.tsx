@@ -19,7 +19,7 @@ import { EntityActionDialog, PublicProps } from 'src/util/EntityActionDialog';
 import { ServiceConfigContext } from 'src/config';
 
 
-export interface Props extends PublicProps<any> {
+export interface Props extends PublicProps {
   forTemplateType: gqlSchema.TemplateType;
 }
 

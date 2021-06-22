@@ -49,7 +49,8 @@ interface Props {
   onSubmitted?: () => void;
   currentFileId?: string;
   currentFileIdTouched: boolean;
-  style?: StyleObject;
+  containerStyle?: StyleObject;
+  formStyle?: StyleObject;
 }
 
 export function Form({
@@ -57,7 +58,8 @@ export function Form({
   onSubmitted,
   currentFileId,
   currentFileIdTouched,
-  style
+  containerStyle,
+  formStyle
 }: Props) {
   const [css] = useStyletron();
   const size = useSize();
@@ -140,7 +142,8 @@ export function Form({
   return (
     <EntityActionForm
       actionTitle={`Изменить шаблон "${templateType.title}"`}
-      formStyle={style}
+      containerStyle={containerStyle}
+      formStyle={formStyle}
       formContent={
         <>
           <div className={css({

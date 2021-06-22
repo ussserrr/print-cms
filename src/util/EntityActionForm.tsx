@@ -6,9 +6,12 @@ import { toaster } from 'baseui/toast';
 
 import { CombinedError } from 'urql';
 
+import ErrorsList from './ErrorsList';
+
 
 type Props<ResultData> = {
   actionTitle?: string;
+  containerStyle?: StyleObject;
   formStyle?: StyleObject;
   formContent?: React.ReactNode | (() => React.ReactNode);
   data?: ResultData;
@@ -19,6 +22,7 @@ type Props<ResultData> = {
 
 export function EntityActionForm<ResultData = any>({
   actionTitle,
+  containerStyle,
   formStyle,
   formContent,
   data,
@@ -54,8 +58,19 @@ export function EntityActionForm<ResultData = any>({
   }, [error, actionTitle]);
 
   return (
-    <form className={formStyle ? css(formStyle) : undefined}>
-      {formContent}
-    </form>
+    <div className={css({
+      display: 'flex',
+      flexDirection: 'column',
+      ...containerStyle
+    })}>
+      <form className={formStyle ? css(formStyle) : undefined}>
+        {formContent}
+      </form>
+      {
+        error
+        ? <ErrorsList error={error} />
+        : null
+      }
+    </div>
   );
 }

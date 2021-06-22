@@ -67,7 +67,7 @@ export function Card() {
   const [css] = useStyletron();
   const size = useSize();
 
-  const [files, setFiles] = React.useState<gqlSchema.TemplateFile[]>();
+  const [files, setFiles] = React.useState<gqlSchema.TemplateFile[]>([]);
   const [currentFileId, setCurrentFileId] = React.useState<string>();
   const [currentFileIdTouched, setCurrentFileIdTouched] = React.useState<boolean>(false);
 
@@ -75,13 +75,14 @@ export function Card() {
 
   const [{ data, fetching, error, stale }] = useQuery<TemplateTypeData, QueryVars>({
     query: TEMPLATE_TYPE,
-    variables: { id: templateTypeId }
+    variables: { id: templateTypeId },
+    pause: removeDialogIsOpen
   });
 
   useBreadcrumbs(KEY, data?.templateType?.title ?? KEY);
 
   React.useEffect(() => {
-    setFiles(data?.templateType?.pageOfFiles?.items);
+    setFiles(data?.templateType?.pageOfFiles?.items ?? []);
     setCurrentFileIdTouched(false);
     setCurrentFileId(data?.templateType?.pageOfFiles?.items?.find(file => file.isCurrentFileOfItsType)?.id);
   }, [data]);
@@ -113,10 +114,14 @@ export function Card() {
               })
           })}>
             <Update.Form
-              style={{
+            containerStyle={{
+              ...((size > 720) ? {
+                flexGrow: 1
+              } : {})
+            }}
+              formStyle={{
                 display: 'flex',
                 ...((size > 720) ? {
-                  flexGrow: 1,
                   margin: '0 0.25rem 0.25rem 0',
                   flexWrap: 'wrap',
                   alignItems: 'start'
@@ -171,8 +176,8 @@ export function Card() {
           <Table
             data={files}
             onCurrentFileChanged={newCurrentFileId => {
-              const newValue = _.clone(files);
-              files?.forEach(file => {
+              const newValue = _.cloneDeep(files);
+              newValue.forEach(file => {
                 file.isCurrentFileOfItsType = (file.id === newCurrentFileId);
               })
               setFiles(newValue);

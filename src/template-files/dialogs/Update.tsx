@@ -13,7 +13,7 @@ import * as gqlSchema from 'src/graphql-schema';
 import { EntityActionDialog, PublicProps } from 'src/util/EntityActionDialog';
 
 
-interface Props extends PublicProps<any> {
+interface Props extends PublicProps {
   templateFile: gqlSchema.TemplateFile;
 }
 

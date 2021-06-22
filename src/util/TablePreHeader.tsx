@@ -15,6 +15,7 @@ type PredefinedProps<ResultData> = EntityDialogPublicProps<ResultData> & { mode:
 type Props<CreateDialogProps, ResultData> = {
   title?: string;
   onCreated?: (data: ResultData) => any;
+  typenamesToInvalidate?: string[];
   createDialog: React.ComponentType<CreateDialogProps>;
   createDialogProps?: Omit<CreateDialogProps, keyof PredefinedProps<ResultData>>;
 }
@@ -26,6 +27,7 @@ export default function TablePreHeader<
 >({
   title,
   onCreated,
+  typenamesToInvalidate,
   createDialog: Dialog,
   createDialogProps: otherProps = {} as CreateDialogProps
 }: Props<CreateDialogProps, ResultData>)
@@ -44,7 +46,8 @@ export default function TablePreHeader<
       setDialogIsOpen(false);
       if (onCreated) onCreated(data);
     },
-    onCancel: () => setDialogIsOpen(false)
+    onCancel: () => setDialogIsOpen(false),
+    typenamesToInvalidate
   };
 
   return (
@@ -59,7 +62,7 @@ export default function TablePreHeader<
         <Button shape={SHAPE.circle} size={SIZE.mini}
           onClick={() => setDialogIsOpen(true)}
         >
-          <Plus size={20} title={'Добавить'} />
+          <Plus size={20} title='Добавить' />
         </Button>
         {
           dialogIsOpen

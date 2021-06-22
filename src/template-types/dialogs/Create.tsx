@@ -75,6 +75,7 @@ export function Dialog(props: Props) {
     <EntityActionDialog<MutationVars, MutationData>
       onSubmitted={props.onSubmitted}
       onCancel={props.onCancel}
+      typenamesToInvalidate={props.typenamesToInvalidate}
       mode='create'
       what='шаблон'
       formStyle={{

@@ -31,7 +31,6 @@ export function Dialog(props: Props) {
   if (props.templateType.pageOfFiles?.total) {
     title += ' и все его файлы';
   }
-  title += '?';
 
   return (
     <EntityActionDialog<RemoveMutationVars>

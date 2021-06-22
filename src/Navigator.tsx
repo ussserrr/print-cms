@@ -17,6 +17,7 @@ import { StatefulMenu } from 'baseui/menu';
 
 import { ROUTES } from './routes';
 import { useSize } from './util/Hooks';
+import { MODAL_CLOSE_TIMEOUT_MS } from './util/constants';
 
 
 function MobileMenu({ close }: { close: () => void }) {
@@ -26,7 +27,7 @@ function MobileMenu({ close }: { close: () => void }) {
 
   React.useEffect(() => {
     if (!isOpen) {
-      setTimeout(close, 500);
+      setTimeout(close, MODAL_CLOSE_TIMEOUT_MS);
     }
   }, [isOpen, close]);
 

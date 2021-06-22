@@ -36,19 +36,6 @@ export function Table({ data, isLoading, error, onItemSelect }: Props) {
         : 'Шаблоны не найдены'
       }
       loadingMessage={<Loader/>}
-      // overrides={{
-      //   TableBodyRow: {
-      //     props: {
-      //       onDoubleClick: (e: React.MouseEvent<HTMLTableRowElement>) => {
-      //         const index = e.currentTarget?.closest('tr')?.rowIndex;
-      //         if (index !== undefined && data !== undefined) {
-      //           // non-zero-based index (as 0 is for header row) so we need to convert to zero-based
-      //           onItemSelect(data[index - 1]);
-      //         }
-      //       }
-      //     }
-      //   }
-      // }}
     >
       <TableBuilderColumn header='Владелец' children={(row: gqlSchema.TemplateType) =>
         muteOnNonActive(row, row.owner)

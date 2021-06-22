@@ -83,6 +83,7 @@ export function List() {
             createFile: true
           });
         }}
+        typenamesToInvalidate={['TemplateTypesPageResult']}
         createDialog={CreateDialog}
       />
 
