@@ -33,6 +33,11 @@ export function Dialog(props: Props) {
       onCancel={props.onCancel}
       mode='remove'
       what={`файл "${props.templateFile.title}"`}
+      formContent={
+        props.templateFile.isCurrentFileOfItsType
+        ? 'Внимание, файл является текущим для данного шаблона'
+        : undefined
+      }
       query={REMOVE_FILE}
       vars={vars}
       onSubmit={() => {

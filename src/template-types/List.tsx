@@ -61,7 +61,8 @@ export function List() {
   const [{ data, fetching, stale, error }] = useQuery<ListData, QueryVars>({
     query: QUERY,
     variables,
-    pause: variables === undefined
+    pause: variables === undefined,
+    requestPolicy: 'cache-and-network'
   });
 
   React.useEffect(() => {
@@ -83,7 +84,6 @@ export function List() {
             createFile: true
           });
         }}
-        typenamesToInvalidate={['TemplateTypesPageResult']}
         createDialog={CreateDialog}
       />
 

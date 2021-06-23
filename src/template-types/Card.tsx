@@ -15,8 +15,8 @@ import { useBreadcrumbs } from 'src/Breadcrumbs';
 import TablePreHeader from 'src/util/TablePreHeader';
 import Loader from 'src/util/Loader';
 import ErrorsList from 'src/util/ErrorsList';
-import * as Create from 'src/template-files/dialogs/Create';
-import { Table } from 'src/template-files/Table';
+import * as CreateFile from 'src/template-files/dialogs/Create';
+import { Table as FilesTable } from 'src/template-files/Table';
 import * as Update from './forms/Update';
 import * as Remove from './dialogs/Remove';
 
@@ -71,12 +71,15 @@ export function Card() {
   const [currentFileId, setCurrentFileId] = React.useState<string>();
   const [currentFileIdTouched, setCurrentFileIdTouched] = React.useState<boolean>(false);
 
+  const shouldCreateFileOnOpen = (location.state as any)?.createFile ? true : false;
+  const [firstFileCreated, setFirstFileCreated] = React.useState<boolean>(false);
   const [removeDialogIsOpen, setRemoveDialogIsOpen] = React.useState(false);
+  const [someFileRemovalDialogIsOpen, setSomeFileRemovalDialogIsOpen] = React.useState(false);
 
   const [{ data, fetching, error, stale }] = useQuery<TemplateTypeData, QueryVars>({
     query: TEMPLATE_TYPE,
     variables: { id: templateTypeId },
-    pause: removeDialogIsOpen
+    pause: removeDialogIsOpen || someFileRemovalDialogIsOpen
   });
 
   useBreadcrumbs(KEY, data?.templateType?.title ?? KEY);
@@ -86,6 +89,7 @@ export function Card() {
     setCurrentFileIdTouched(false);
     setCurrentFileId(data?.templateType?.pageOfFiles?.items?.find(file => file.isCurrentFileOfItsType)?.id);
   }, [data]);
+
 
   if (error) {
     return <ErrorsList error={error} />;
@@ -114,11 +118,11 @@ export function Card() {
               })
           })}>
             <Update.Form
-            containerStyle={{
-              ...((size > 720) ? {
-                flexGrow: 1
-              } : {})
-            }}
+              containerStyle={{
+                ...((size > 720) ? {
+                  flexGrow: 1
+                } : {})
+              }}
               formStyle={{
                 display: 'flex',
                 ...((size > 720) ? {
@@ -133,6 +137,12 @@ export function Card() {
               templateType={data.templateType}
               currentFileId={currentFileId}
               currentFileIdTouched={currentFileIdTouched}
+              shouldActivate={
+                shouldCreateFileOnOpen &&
+                firstFileCreated &&
+                files.length === 1 &&
+                Boolean(currentFileId)
+              }
             />
 
             <Button
@@ -154,9 +164,6 @@ export function Card() {
                   onSubmitted={() => {
                     setRemoveDialogIsOpen(false)
                     history.push(location.pathname.substring(0, location.pathname.lastIndexOf('/')));  // TODO: test when ALL queries/mutations are slow (Chrome DevTools or in server)
-                    // if (onRemove) onRemove();
-                    // try {  // this item, as we execute the removal operation, can be not existing at this point
-                    // } catch {};
                   }}
                   onCancel={() => setRemoveDialogIsOpen(false)}
                   templateType={data.templateType}
@@ -165,21 +172,20 @@ export function Card() {
             }
           </div>
 
-          <TablePreHeader<Create.Props>
+          <TablePreHeader<CreateFile.Props>
             title='Файлы'
-            createDialog={Create.Dialog}
-            createDialogProps={{
-              forTemplateType: data.templateType
-            }}
+            dialogIsOpenInitially={shouldCreateFileOnOpen}
+            onCreated={() => setFirstFileCreated(true)}
+            createDialog={CreateFile.Dialog}
+            createDialogProps={{ forTemplateType: data.templateType }}
           />
 
-          <Table
+          <FilesTable
             data={files}
+            setSomeFileRemovalDialogIsOpen={setSomeFileRemovalDialogIsOpen}
             onCurrentFileChanged={newCurrentFileId => {
               const newValue = _.cloneDeep(files);
-              newValue.forEach(file => {
-                file.isCurrentFileOfItsType = (file.id === newCurrentFileId);
-              })
+              newValue.forEach(file => file.isCurrentFileOfItsType = (file.id === newCurrentFileId));
               setFiles(newValue);
               setCurrentFileId(newCurrentFileId);
               setCurrentFileIdTouched(true);

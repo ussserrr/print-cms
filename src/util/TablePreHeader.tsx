@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { useLocation } from 'react-router-dom';
+// import { useLocation } from 'react-router-dom';
 
 import { useStyletron } from 'baseui';
 import { LabelLarge } from 'baseui/typography';
@@ -14,8 +14,8 @@ type PredefinedProps<ResultData> = EntityDialogPublicProps<ResultData> & { mode:
 
 type Props<CreateDialogProps, ResultData> = {
   title?: string;
+  dialogIsOpenInitially?: boolean;
   onCreated?: (data: ResultData) => any;
-  typenamesToInvalidate?: string[];
   createDialog: React.ComponentType<CreateDialogProps>;
   createDialogProps?: Omit<CreateDialogProps, keyof PredefinedProps<ResultData>>;
 }
@@ -26,28 +26,23 @@ export default function TablePreHeader<
   ResultData = any
 >({
   title,
+  dialogIsOpenInitially,
   onCreated,
-  typenamesToInvalidate,
   createDialog: Dialog,
   createDialogProps: otherProps = {} as CreateDialogProps
 }: Props<CreateDialogProps, ResultData>)
 {
   const [css] = useStyletron();
 
-  const location = useLocation();
-
-  const [dialogIsOpen, setDialogIsOpen] = React.useState<boolean>(
-    (location.state as any)?.createFile ? true : false
-  );
+  const [isOpen, setIsOpen] = React.useState(dialogIsOpenInitially);
 
   const addingSpecificProps: PredefinedProps<ResultData> = {
     mode: 'create',
     onSubmitted: (data: ResultData) => {
-      setDialogIsOpen(false);
+      setIsOpen(false);
       if (onCreated) onCreated(data);
     },
-    onCancel: () => setDialogIsOpen(false),
-    typenamesToInvalidate
+    onCancel: () => setIsOpen(false)
   };
 
   return (
@@ -60,12 +55,12 @@ export default function TablePreHeader<
       <LabelLarge>{title}</LabelLarge>
       <React.Fragment>
         <Button shape={SHAPE.circle} size={SIZE.mini}
-          onClick={() => setDialogIsOpen(true)}
+          onClick={() => setIsOpen(true)}
         >
           <Plus size={20} title='Добавить' />
         </Button>
         {
-          dialogIsOpen
+          isOpen
           ? <Dialog
               {...addingSpecificProps}
               {...otherProps as CreateDialogProps}  // https://stackoverflow.com/a/60735856/7782943

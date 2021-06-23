@@ -19,7 +19,6 @@ type CancelHandler = (args: {closeSource?: CLOSE_SOURCE[keyof CLOSE_SOURCE] | 'c
 export interface PublicProps<ResultData = any> {
   onSubmitted: (data: ResultData) => void;
   onCancel: CancelHandler;
-  typenamesToInvalidate?: string[];
 }
 
 interface Props<MutationVars, ResultData> extends PublicProps<ResultData> {
@@ -36,7 +35,6 @@ interface Props<MutationVars, ResultData> extends PublicProps<ResultData> {
 export function EntityActionDialog<MutationVars = any, ResultData = any>({
   onSubmitted,
   onCancel: onCancelPassed,
-  typenamesToInvalidate,
   mode,
   what,
   formStyle,
@@ -97,15 +95,13 @@ export function EntityActionDialog<MutationVars = any, ResultData = any>({
 
   const [{fetching, data, error, extensions}, mutate] = useMutation<ResultData, MutationVars>(query);
 
-  [typenamesToInvalidate] = React.useState(typenamesToInvalidate);
   React.useEffect(() => {
     if (vars) {
       mutate(
-        vars,  // comment this to quickly test an error appearance :)
-        { additionalTypenames: typenamesToInvalidate }
+        vars  // comment this to quickly test an error appearance :)
       );
     }
-  }, [vars, mutate, typenamesToInvalidate]);
+  }, [vars, mutate]);
 
   React.useEffect(() => {
     if (data) {

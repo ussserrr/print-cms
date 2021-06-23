@@ -79,7 +79,10 @@ export function Dialog(props: Props) {
     },
     onSubmit: values => setVars({
       file: values.file!,
-      data: _.omit(values, ['file'])
+      data: {
+        ..._.omit(values, ['file']),
+        title: values.title ? values.title : undefined
+      }
     })
   });
 
@@ -105,7 +108,6 @@ export function Dialog(props: Props) {
     <EntityActionDialog<MutationVars>
       onSubmitted={props.onSubmitted}
       onCancel={args => {
-        // formik.resetForm();
         props.onCancel(args);
       }}
       mode='create'

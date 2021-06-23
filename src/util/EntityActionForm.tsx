@@ -31,6 +31,7 @@ export function EntityActionForm<ResultData = any>({
 }: Props<ResultData>) {
   const [css] = useStyletron();
 
+  [actionTitle] = React.useState(actionTitle);
   React.useEffect(() => {
     if (data) {
       toaster.positive(`Успешно: ${actionTitle}`, {});
@@ -56,6 +57,7 @@ export function EntityActionForm<ResultData = any>({
       toaster.negative(`Ошибка: ${actionTitle}`, {});
     }
   }, [error, actionTitle]);
+
 
   return (
     <div className={css({

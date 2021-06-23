@@ -1,11 +1,14 @@
 import * as React from 'react';
 
+import { useHistory, useLocation } from 'react-router-dom';
+
 import { StyleObject } from 'styletron-standard';
 import { useStyletron } from 'baseui';
 import { FormControl } from 'baseui/form-control';
 import { Input } from 'baseui/input';
 import { Checkbox } from 'baseui/checkbox';
 import { Button } from 'baseui/button';
+import { toaster } from 'baseui/toast';
 
 import { gql, useMutation } from 'urql';
 
@@ -51,6 +54,7 @@ interface Props {
   currentFileIdTouched: boolean;
   containerStyle?: StyleObject;
   formStyle?: StyleObject;
+  shouldActivate?: boolean;
 }
 
 export function Form({
@@ -59,10 +63,14 @@ export function Form({
   currentFileId,
   currentFileIdTouched,
   containerStyle,
-  formStyle
+  formStyle,
+  shouldActivate
 }: Props) {
   const [css] = useStyletron();
   const size = useSize();
+
+  const history = useHistory();
+  const location = useLocation();
 
   const [{fetching, data, error, extensions}, mutate] = useMutation<any, MutationVars>(QUERY);
 
@@ -118,6 +126,8 @@ export function Form({
         } else if (!currentFileId && !templateType.active) {
           setActiveDisabled(true);
           setActiveCaption('Отметьте один из файлов ниже как текущий чтобы активировать шаблон');
+        } else {
+          setActiveCaption(undefined);
         }
       }
     } else {
@@ -137,6 +147,18 @@ export function Form({
       }
     }
   }, [activeShouldRecalculate, activeValue]);
+
+  React.useEffect(() => {
+    if (shouldActivate) {
+      mutate({
+        id: templateType.id,
+        data: { active: true }
+      }).then(() => {
+        history.replace(location.pathname);
+        toaster.positive('Шаблон активирован и доступен для печати', {});
+      });
+    }
+  }, [shouldActivate, mutate, templateType, history, location]);
 
 
   return (

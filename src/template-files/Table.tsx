@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+import _ from 'lodash';
+
 import { DateTime } from 'luxon';
 
 import { TableBuilder, TableBuilderColumn } from 'baseui/table-semantic';
@@ -14,9 +16,10 @@ import { Actions } from './Actions';
 
 
 type Props = {
-  data?: gqlSchema.TemplateFile[];
+  data: gqlSchema.TemplateFile[];
   isLoading?: boolean;
   error?: CombinedError;
+  setSomeFileRemovalDialogIsOpen?: React.Dispatch<React.SetStateAction<boolean>>;
   onCurrentFileChanged?: (id?: string) => void;
 }
 
@@ -24,7 +27,8 @@ export function Table({
   data,
   isLoading,
   error,
-  onCurrentFileChanged,
+  setSomeFileRemovalDialogIsOpen,
+  onCurrentFileChanged
 }: Props) {
   const serviceConfig = React.useContext(ServiceConfigContext);
   let filesToKeep = '';
@@ -36,9 +40,17 @@ export function Table({
     filesToKeep = serviceConfig.filesToKeep.toString();
   }
 
+  const [removalDialogsOpenState, setRemovalDialogOpenState] = React.useState<boolean[]>([]);
+  React.useEffect(() => {
+    if (setSomeFileRemovalDialogIsOpen) {
+      setSomeFileRemovalDialogIsOpen(removalDialogsOpenState.some(v => v));
+    }
+  }, [setSomeFileRemovalDialogIsOpen, removalDialogsOpenState]);
+
+
   return (
     <TableBuilder
-      data={data ?? []}
+      data={data}
       isLoading={isLoading ?? false}
       emptyMessage={
         error
@@ -58,7 +70,7 @@ export function Table({
         }
       }}
     >
-      <TableBuilderColumn header={'Текущий?'}
+      <TableBuilderColumn header='Текущий?'
         children={(row: gqlSchema.TemplateFile) =>
           <Checkbox
             name={row.id}
@@ -73,13 +85,25 @@ export function Table({
         }
       />
       <TableBuilderColumn header='Действия'
-        children={(row: gqlSchema.TemplateFile) => <Actions templateFile={row} />} />
+        children={(row: gqlSchema.TemplateFile, rowIndex) =>
+          <Actions
+            templateFile={row}
+            setRemovalDialogIsOpen={flag => {
+              const newVal = _.clone(removalDialogsOpenState);
+              if (rowIndex !== undefined) newVal[rowIndex] = flag;
+              setRemovalDialogOpenState(newVal);
+            }}
+          />
+        }
+      />
       <TableBuilderColumn header='Название'
         children={(row: gqlSchema.TemplateFile) => row.title} />
       <TableBuilderColumn header='Тип'
         children={(row: gqlSchema.TemplateFile) => row.mimeType} />
       <TableBuilderColumn header='Изменен'
-        children={(row: gqlSchema.TemplateFile) => DateTime.fromISO(row.updatedAt as unknown as string).toLocaleString(DateTime.DATETIME_MED)} />
+        children={(row: gqlSchema.TemplateFile) =>
+          DateTime.fromISO(row.updatedAt as unknown as string).toLocaleString(DateTime.DATETIME_MED)
+        } />
     </TableBuilder>
   );
 }

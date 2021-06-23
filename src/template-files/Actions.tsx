@@ -10,6 +10,7 @@ import * as Remove from './dialogs/Remove';
 
 type Props = {
   templateFile: gqlSchema.TemplateFile;
+  setRemovalDialogIsOpen: (flag: boolean) => void;
 }
 
 
@@ -39,7 +40,7 @@ function UpdateButton({ templateFile }: Props) {
 }
 
 
-function RemoveButton({ templateFile }: Props) {
+function RemoveButton({ templateFile, setRemovalDialogIsOpen }: Props) {
   const [dialogIsOpen, setDialogIsOpen] = React.useState(false);
 
   return (
@@ -47,17 +48,24 @@ function RemoveButton({ templateFile }: Props) {
       <Button shape={SHAPE.square} size={SIZE.mini}
         overrides={{ Root: { style: { fontWeight: 'bold', fontSize: '20pt' } } }}
         children={<span title='Удалить'>×</span>}
-        onClick={() => setDialogIsOpen(true)}
+        onClick={() => {
+          setDialogIsOpen(true);
+          setRemovalDialogIsOpen(true);
+        }}
       />
       {
         dialogIsOpen
         ? <Remove.Dialog
             onSubmitted={() => {
-              try {  // this item, as we execute the removal operation, can be not existing at this point
-                setDialogIsOpen(false)
-              } catch {};
+              // try {  // this item, as we execute the removal operation, can be not existing at this point
+                setDialogIsOpen(false);
+                setRemovalDialogIsOpen(false);
+              // } catch {};
             }}
-            onCancel={() => setDialogIsOpen(false)}
+            onCancel={() => {
+              setDialogIsOpen(false);
+              setRemovalDialogIsOpen(false);
+            }}
             templateFile={templateFile}
           />
         : null
