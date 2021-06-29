@@ -34,17 +34,20 @@ interface FormData {
   title: string;
 }
 
-export type Props = PublicProps<MutationData>
+export interface Props extends PublicProps<MutationData> {
+  initialValues: FormData;
+}
 
 
-export function Dialog(props: Props) {
+export function Dialog({
+  onSubmitted,
+  onCancel,
+  initialValues
+}: Props) {
   const [vars, setVars] = React.useState<MutationVars>();
 
   const formik = useFormik<FormData>({
-    initialValues: {
-      owner: [],
-      title: ''
-    },
+    initialValues,
     validate: values => {
       const errors: Partial<Record<keyof FormData, string>> = {};
 
@@ -73,8 +76,8 @@ export function Dialog(props: Props) {
 
   return (
     <EntityActionDialog<MutationVars, MutationData>
-      onSubmitted={props.onSubmitted}
-      onCancel={props.onCancel}
+      onSubmitted={onSubmitted}
+      onCancel={onCancel}
       mode='create'
       what='шаблон'
       formStyle={{

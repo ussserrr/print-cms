@@ -62,12 +62,20 @@ export function List() {
     query: QUERY,
     variables,
     pause: variables === undefined,
+
+    /**
+     * TODO:
+     * Any change of the template type/file may violate cached filtering results so
+     * whether invalidate the cache when joining this scope or switch to more sophisticated
+     * cache type (Normalized)
+     */
     requestPolicy: 'cache-and-network'
   });
 
   React.useEffect(() => {
     if (error) toaster.negative('Ошибка запроса шаблонов', {});
   }, [error]);
+
 
   return (
     <div>
@@ -79,12 +87,18 @@ export function List() {
 
       <TablePreHeader<CreateDialogProps, MutationData>
         title={'Всего: ' + (data?.templateTypes.total ?? '🤷')}
-        onCreated={data => {
+        onCreated={data =>
           history.push(location.pathname + '/' + data.createTemplateType.id, {
             createFile: true
-          });
-        }}
+          })
+        }
         createDialog={CreateDialog}
+        createDialogProps={{
+          initialValues: {
+            owner: variables?.filter?.owners?.length ? [{ id: variables.filter.owners[0] }] : [],
+            title: variables?.filter?.common?.search ?? ''
+          }
+        }}
       />
 
       <Table

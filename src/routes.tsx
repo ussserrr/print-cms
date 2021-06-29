@@ -12,6 +12,7 @@ type RouteNode = {
   title?: string;
   component: React.ComponentType<any>;
   children?: RouteNode[];
+  external?: boolean;
 }
 
 
@@ -30,9 +31,11 @@ export function RenderRoutes({ routes }: { routes: RouteNode[] }) {
 
   return (
     <Switch>
-      {routes.map(route => {
-        return <RouteWithSubRoutes {...route} />;
+      {routes.map((route, idx) => {
+        return <RouteWithSubRoutes {...route} key={idx.toString()} />;
       })}
+
+      {/* TODO */}
       <Route component={() => <h1>Страница не найдена</h1>} />
     </Switch>
   );
@@ -66,4 +69,10 @@ export const ROUTES: RouteNode[] = [{
     exact: true,
     component: Card
   }]
+}, {
+  key: 'Очередь',
+  path: 'http://192.168.1.214:4000/print/queues',
+  title: 'Очередь',
+  component: () => null,
+  external: true
 }];

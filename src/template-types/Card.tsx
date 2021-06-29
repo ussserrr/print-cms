@@ -162,8 +162,8 @@ export function Card() {
               removeDialogIsOpen
               ? <Remove.Dialog
                   onSubmitted={() => {
-                    setRemoveDialogIsOpen(false)
-                    history.push(location.pathname.substring(0, location.pathname.lastIndexOf('/')));  // TODO: test when ALL queries/mutations are slow (Chrome DevTools or in server)
+                    setRemoveDialogIsOpen(false);
+                    history.push(location.pathname.substring(0, location.pathname.lastIndexOf('/')));
                   }}
                   onCancel={() => setRemoveDialogIsOpen(false)}
                   templateType={data.templateType}

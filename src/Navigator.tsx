@@ -39,11 +39,18 @@ function MobileMenu({ close }: { close: () => void }) {
       <ModalHeader>Меню</ModalHeader>
       <ModalBody>
         <StatefulMenu
-          items={ROUTES.map(({ title: label, path: href }) => ({ label, href }))}
+          items={ROUTES.map(({ title, path: href, external }) => ({
+            label: external ? (title + ' ⤴︎') : title,
+            href
+          }))}
           onItemSelect={({ item, event }) => {
-            event?.preventDefault();
-            setIsOpen(false);
-            history.push(item.href);
+            if (item.label.endsWith('⤴︎')) {  // TODO: take out to util (EXTERNAL_LINK_SYMBOL const)
+              // External link will be opened (in the same window)
+            } else {
+              event?.preventDefault();
+              setIsOpen(false);
+              history.push(item.href);
+            }
           }}
         />
       </ModalBody>
@@ -63,11 +70,18 @@ export function Navigator({ style }: { style?: StyleObject }) {
 
     ? <Navigation
         overrides={{ Root: { style } }}
-        items={ROUTES.map(({ title, path: itemId }) => ({ title, itemId }))}
+        items={ROUTES.map(({ title, path: itemId, external }) => ({
+          title: external ? (title + ' ⤴︎') : title,
+          itemId
+        }))}
         activeItemId={ROUTES.find(r => location.pathname.startsWith(r.path))?.path ?? location.pathname}
         onChange={({ item, event }) => {
-          event.preventDefault();
-          history.push(item.itemId);
+          if (item.title.endsWith('⤴︎')) {  // TODO: take out to util (EXTERNAL_LINK_SYMBOL const)
+            // External link will be opened (in the same window)
+          } else {
+            event.preventDefault();
+            history.push(item.itemId);
+          }
         }}
       />
 
