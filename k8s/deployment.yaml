@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: print-cms-deployment
+  labels:
+    app: print-cms
+spec:
+  selector:
+    matchLabels:
+      app: print-cms
+  template:
+    metadata:
+      labels:
+        app: print-cms
+    spec:
+      containers:
+      - name: print-cms
+        image: print-cms:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 3000
+        env:
+          - name: NODE_ENV
+            value: production
