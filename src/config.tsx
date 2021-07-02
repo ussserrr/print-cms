@@ -30,7 +30,7 @@ export function ServiceConfigProvider({ children }: { children: React.ReactNode 
   const [value, setValue] = React.useState<ServiceConfig>({ loading: true });
 
   React.useEffect(() => {
-    fetch('http://192.168.1.214:4000/print/config')
+    fetch('/api/print/config')
       .then(async response => {
         if (!response.ok) throw new Error(response.statusText);
         const config = await response.json();

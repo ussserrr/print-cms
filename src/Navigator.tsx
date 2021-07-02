@@ -17,7 +17,7 @@ import { StatefulMenu } from 'baseui/menu';
 
 import { ROUTES } from './routes';
 import { useSize } from './util/Hooks';
-import { MODAL_CLOSE_TIMEOUT_MS } from './util/constants';
+import { EXTERNAL_LINK_SYMBOL, MODAL_CLOSE_TIMEOUT_MS } from './util/constants';
 
 
 function MobileMenu({ close }: { close: () => void }) {
@@ -35,16 +35,39 @@ function MobileMenu({ close }: { close: () => void }) {
     <Modal
       isOpen={isOpen}
       onClose={() => setIsOpen(false)}
+      overrides={{
+        Close: {
+          component: () => null
+        },
+        Dialog: {
+          style: {
+            width: '70vw',
+            textAlign: 'center'
+          }
+        }
+      }}
     >
       <ModalHeader>Меню</ModalHeader>
       <ModalBody>
         <StatefulMenu
+          overrides={{
+            List: {
+              style: {
+                boxShadow: 'none'
+              }
+            },
+            ListItem: {
+              style: {
+                padding: '1.5rem 0',
+              }
+            }
+          }}
           items={ROUTES.map(({ title, path: href, external }) => ({
-            label: external ? (title + ' ⤴︎') : title,
+            label: external ? (title + ' ' + EXTERNAL_LINK_SYMBOL) : title,
             href
           }))}
           onItemSelect={({ item, event }) => {
-            if (item.label.endsWith('⤴︎')) {  // TODO: take out to util (EXTERNAL_LINK_SYMBOL const)
+            if (item.label.endsWith(EXTERNAL_LINK_SYMBOL)) {  // TODO: take out to util (EXTERNAL_LINK_SYMBOL const)
               // External link will be opened (in the same window)
             } else {
               event?.preventDefault();
@@ -69,14 +92,23 @@ export function Navigator({ style }: { style?: StyleObject }) {
     (size > 640)
 
     ? <Navigation
-        overrides={{ Root: { style } }}
+        overrides={{
+          Root: {
+            style
+          },
+          NavItem: {
+            style: {
+              overflowWrap: 'anywhere'
+            }
+          }
+        }}
         items={ROUTES.map(({ title, path: itemId, external }) => ({
-          title: external ? (title + ' ⤴︎') : title,
+          title: external ? (title + ' ' + EXTERNAL_LINK_SYMBOL) : title,
           itemId
         }))}
         activeItemId={ROUTES.find(r => location.pathname.startsWith(r.path))?.path ?? location.pathname}
         onChange={({ item, event }) => {
-          if (item.title.endsWith('⤴︎')) {  // TODO: take out to util (EXTERNAL_LINK_SYMBOL const)
+          if (item.title.endsWith(EXTERNAL_LINK_SYMBOL)) {  // TODO: take out to util (EXTERNAL_LINK_SYMBOL const)
             // External link will be opened (in the same window)
           } else {
             event.preventDefault();

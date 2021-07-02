@@ -22,7 +22,7 @@ const engine = new StyletronClient();
 
 function App() {
   const gqlClient = createClient({
-    url: 'http://192.168.1.214:4000/graphql',
+    url: '/api/graphql',
     exchanges: [dedupExchange, cacheExchange, multipartFetchExchange]
   });
 

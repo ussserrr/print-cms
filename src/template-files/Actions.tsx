@@ -80,7 +80,7 @@ function DownloadButton({ templateFile }: Props) {
     <Button shape={SHAPE.square} size={SIZE.mini}
       overrides={{ Root: { style: { fontWeight: 'bold', fontSize: '16pt' } } }}
       children={<span title='Скачать'>⤓</span>}
-      $as='a' href={'http://192.168.1.214:4000/print/raw/' + templateFile.id}
+      $as='a' href={'/api/print/raw/' + templateFile.id}
     />
   );
 }

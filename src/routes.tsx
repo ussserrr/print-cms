@@ -71,8 +71,14 @@ export const ROUTES: RouteNode[] = [{
   }]
 }, {
   key: 'Очередь',
-  path: 'http://192.168.1.214:4000/print/queues',
-  title: 'Очередь',
+  path: '/api/print/queues',
+  title: 'Состояние очереди',
+  component: () => null,
+  external: true
+}, {
+  key: 'Документация',
+  path: '/api/docs',
+  title: 'Документация',
   component: () => null,
   external: true
 }];
