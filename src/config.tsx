@@ -5,6 +5,8 @@ import { OptionsT } from 'baseui/select';
 
 import { Duration, DurationObject } from 'luxon';
 
+import { API_URL } from './routes';
+
 
 type ServiceConfig =
   |
@@ -30,7 +32,7 @@ export function ServiceConfigProvider({ children }: { children: React.ReactNode 
   const [value, setValue] = React.useState<ServiceConfig>({ loading: true });
 
   React.useEffect(() => {
-    fetch('/api/print/config')
+    fetch(API_URL + '/print/config')
       .then(async response => {
         if (!response.ok) throw new Error(response.statusText);
         const config = await response.json();

@@ -3,6 +3,7 @@ import * as React from 'react';
 import { useStyletron } from 'styletron-react';
 import { Button, SHAPE, SIZE } from 'baseui/button';
 
+import { API_URL } from 'src/routes';
 import * as gqlSchema from 'src/graphql-schema';
 import * as Update from './dialogs/Update';
 import * as Remove from './dialogs/Remove';
@@ -80,7 +81,7 @@ function DownloadButton({ templateFile }: Props) {
     <Button shape={SHAPE.square} size={SIZE.mini}
       overrides={{ Root: { style: { fontWeight: 'bold', fontSize: '16pt' } } }}
       children={<span title='Скачать'>⤓</span>}
-      $as='a' href={'/api/print/raw/' + templateFile.id}
+      $as='a' href={API_URL + '/print/raw/' + templateFile.id}
     />
   );
 }

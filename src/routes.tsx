@@ -3,7 +3,10 @@ import { Switch, Route } from 'react-router-dom';
 import { List } from './template-types/List';
 import { Card } from './template-types/Card';
 import { useBreadcrumbs } from './Breadcrumbs';
+import { LoadTesting } from './load-testing';
 
+
+export const API_URL = process.env.REACT_APP_API_URL ?? '/api';
 
 type RouteNode = {
   key: string;
@@ -64,6 +67,12 @@ export const ROUTES: RouteNode[] = [{
     title: 'Список',
     component: List
   }, {
+    key: 'Нагрузочный тест',
+    path: '/types/load-testing',
+    exact: true,
+    title: 'Нагрузочный тест',
+    component: LoadTesting
+  }, {
     key: 'Шаблон',
     path: '/types/:templateTypeId',
     exact: true,
@@ -71,13 +80,13 @@ export const ROUTES: RouteNode[] = [{
   }]
 }, {
   key: 'Очередь',
-  path: '/api/print/queues',
+  path: API_URL + '/print/queues',
   title: 'Состояние очереди',
   component: () => null,
   external: true
 }, {
   key: 'Документация',
-  path: '/api/docs',
+  path: API_URL + '/docs',
   title: 'Документация',
   component: () => null,
   external: true
