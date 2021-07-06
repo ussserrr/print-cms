@@ -16,7 +16,7 @@ import { useFormik } from 'formik';
 
 import * as gqlSchema from 'src/graphql-schema';
 import { EntityActionForm } from 'src/util/EntityActionForm';
-import { useSize } from 'src/util/Hooks';
+import { useScreenSize } from 'src/util/Hooks';
 
 
 /**
@@ -67,7 +67,7 @@ export function Form({
   shouldActivate
 }: Props) {
   const [css] = useStyletron();
-  const size = useSize();
+  const size = useScreenSize();
 
   const history = useHistory();
   const location = useLocation();

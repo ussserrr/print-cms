@@ -10,7 +10,7 @@ import { Button } from 'baseui/button';
 import { gql, useQuery } from 'urql';
 
 import * as gqlSchema from 'src/graphql-schema';
-import { useSize } from 'src/util/Hooks';
+import { useScreenSize } from 'src/util/Hooks';
 import { useBreadcrumbs } from 'src/Breadcrumbs';
 import TablePreHeader from 'src/util/TablePreHeader';
 import Loader from 'src/util/Loader';
@@ -65,7 +65,7 @@ export function Card() {
   const location = useLocation();
 
   const [css] = useStyletron();
-  const size = useSize();
+  const size = useScreenSize();
 
   const [files, setFiles] = React.useState<gqlSchema.TemplateFile[]>([]);
   const [currentFileId, setCurrentFileId] = React.useState<string>();

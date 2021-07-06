@@ -16,7 +16,7 @@ import { Modal, ModalBody, ModalHeader } from 'baseui/modal';
 import { StatefulMenu } from 'baseui/menu';
 
 import { ROUTES } from './routes';
-import { useSize } from './util/Hooks';
+import { useScreenSize } from './util/Hooks';
 import { EXTERNAL_LINK_SYMBOL, MODAL_CLOSE_TIMEOUT_MS } from './util/constants';
 
 
@@ -86,7 +86,7 @@ export function Navigator({ style }: { style?: StyleObject }) {
   const history = useHistory();
   const location = useLocation();
 
-  const size = useSize();
+  const size = useScreenSize();
 
   return (
     (size > 640)
@@ -120,6 +120,7 @@ export function Navigator({ style }: { style?: StyleObject }) {
     : <HeaderNavigation>
         <StyledNavigationList>
           <StyledNavigationItem $align={ALIGN.left}>
+            {/* TODO: why Popover? for what? */}
             <StatefulPopover content={({ close }) => <MobileMenu close={close} />} >
               <Button overrides={{ Root: { props: { title: 'Меню' } } }}>
                 ☰ Меню

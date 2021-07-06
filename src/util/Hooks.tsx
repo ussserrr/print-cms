@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 
-export function useSize() {
+export function useScreenSize() {
   const [size, setSize] = React.useState(window.innerWidth);
 
   const updateMedia = () => {

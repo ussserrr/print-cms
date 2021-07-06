@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom';
 import { useStyletron } from 'baseui';
 
 import { RenderRoutes, ROUTES } from './routes';
-import { useSize } from './util/Hooks';
+import { useScreenSize } from './util/Hooks';
 import { Navigator } from './Navigator';
 import { BreadcrumbsProvider, BreadcrumbsHeader } from './Breadcrumbs';
 import { ServiceConfigProvider } from './config';
@@ -14,7 +14,7 @@ import { ServiceConfigProvider } from './config';
 export const Main = withRouter(() => {
   const [css, theme] = useStyletron();
 
-  const size = useSize();
+  const size = useScreenSize();
 
   React.useEffect(() => {
     document.body.style.backgroundColor = theme.colors.backgroundPrimary;
@@ -24,11 +24,10 @@ export const Main = withRouter(() => {
     <ServiceConfigProvider>
       <BreadcrumbsProvider>
         <div className={css({
-          // width: '100vw',
-          // height: '100vh',
           display: 'flex',
           ...((size > 640) ? {
-            flexDirection: 'row'
+            flexDirection: 'row',
+            height: '100vh'
           } : {
             flexDirection: 'column'
           })
@@ -56,24 +55,14 @@ export const Main = withRouter(() => {
             <div className={css({
               padding: '30px 5%',
               display: 'flex',
-              flexDirection: 'column'
+              flexDirection: 'column',
+              ...((size > 640) ? {
+                height: 'calc(100vh - (30px * 2))'
+              } : {})
             })}>
               <BreadcrumbsHeader />
 
               <RenderRoutes routes={ROUTES} />
-              {/* <Switch>
-                {routes.map((route, index) =>
-                  <Route
-                    key={index}
-                    path={route.path}
-                    children={<route.component {...{
-                      style: {
-                        flexGrow: 1
-                      }
-                    } as any} />}
-                  />
-                )}
-              </Switch> */}
             </div>
           </div>
         </div>
