@@ -46,6 +46,7 @@ function MobileMenu({ close }: { close: () => void }) {
           }
         }
       }}
+      unstable_ModalBackdropScroll={true}  // TODO
     >
       <ModalHeader>Меню</ModalHeader>
       <ModalBody>
@@ -57,8 +58,11 @@ function MobileMenu({ close }: { close: () => void }) {
               }
             },
             ListItem: {
-              style: {
-                padding: '1.5rem 0',
+              style: {  // verbose form to prevent console warnings
+                paddingTop: '1.5rem',
+                paddingBottom: '1.5rem',
+                paddingLeft: '0',
+                paddingRight: '0'
               }
             }
           }}

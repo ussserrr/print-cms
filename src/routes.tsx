@@ -4,6 +4,7 @@ import { List } from './template-types/List';
 import { Card } from './template-types/Card';
 import { useBreadcrumbs } from './Breadcrumbs';
 import { LoadTesting } from './load-testing';
+import ServiceConfiguration from './config/index';  // TODO: conflicting names
 
 
 export const API_URL = process.env.REACT_APP_API_URL ?? '/api';
@@ -67,11 +68,17 @@ export const ROUTES: RouteNode[] = [{
     title: 'Список',
     component: List
   }, {
-    key: 'Нагрузочный тест',
+    key: 'Нагрузочное тестирование',
     path: '/types/load-testing',
     exact: true,
-    title: 'Нагрузочный тест',
+    title: 'Нагрузочное тестирование',
     component: LoadTesting
+  }, {
+    key: 'config',
+    path: '/types/config',
+    exact: true,
+    title: 'config',
+    component: ServiceConfiguration
   }, {
     key: 'Шаблон',
     path: '/types/:templateTypeId',

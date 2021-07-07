@@ -288,7 +288,7 @@ export function LoadTesting() {
         </div>
       </div>
 
-      <ResultsTable
+      <ResultsTable                             // Results table
         requestsHistory={requestsHistory}
         requestsTimerId={requestsTimerId}
       />

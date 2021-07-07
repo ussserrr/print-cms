@@ -27,7 +27,7 @@ const INPUT_STYLE = {
   margin: ITEM_MARGIN
 };
 
-const DEFAULT_PAGE_SIZE = 2;  // TODO
+const DEFAULT_PAGE_SIZE = 10;
 
 const STORAGE_KEY = 'template-types-list-vars';
 

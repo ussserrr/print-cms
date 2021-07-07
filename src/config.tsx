@@ -9,8 +9,7 @@ import { API_URL } from './routes';
 
 
 type ServiceConfig =
-  |
-    {
+  | {
       filesToKeep: number;
       allowedFileTypes: {
         extension: string;
@@ -25,8 +24,20 @@ type ServiceConfig =
   | { loading: true }
   | { error: Error }
 
+export const serviceConfigDescription = {
+  filesToKeep: 'Максимальное количество файлов на шаблон',
+  allowedFileTypes: 'Допустимые типы файлов',
+  printJob: {
+    _title: 'Задача печати',
+    timeoutMs: 'Время ожидания, мс',
+    removeAfter: 'Очистить выполненные задачи после (формат Luxon)'
+  },
+  owners: 'Допустимые владельцы'
+} as const;
+
 export const ServiceConfigContext = React.createContext<ServiceConfig>({ loading: true });
 ServiceConfigContext.displayName = 'ServiceConfigContext';
+
 
 export function ServiceConfigProvider({ children }: { children: React.ReactNode }) {
   const [value, setValue] = React.useState<ServiceConfig>({ loading: true });
