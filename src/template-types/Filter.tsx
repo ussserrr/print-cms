@@ -88,22 +88,6 @@ function formToVars(value: FormData, pageSize: number = DEFAULT_PAGE_SIZE): Quer
   };
 }
 
-// type OwnersSelectProps = {
-//   owners?: OptionsT[],
-//   formik: ReturnType<typeof useFormik>
-// };
-// const SelectWithRef = React.forwardRef((props, ref) => {
-//   return (
-//     <StatefulSelect
-//       overrides={{
-//         Root: {
-//           props: { ref, ...props },
-//         }
-//       }}
-//     />
-//   );
-// });
-
 type FormData = {
   search?: string;
   active?: boolean;
@@ -159,7 +143,7 @@ export function Filter({ pageSize=DEFAULT_PAGE_SIZE, total, onFilter, style}: Pr
   const serviceConfig = React.useContext(ServiceConfigContext);
   const owners = 'owners' in serviceConfig ? serviceConfig.owners : undefined;
 
-  const ownersSelect =
+  const OwnersSelect =
     <Select
       disabled={owners === undefined}
       options={owners}
@@ -251,9 +235,9 @@ export function Filter({ pageSize=DEFAULT_PAGE_SIZE, total, onFilter, style}: Pr
                 </Notification>
             }
           >
-            <div>{ownersSelect}</div>
+            <div>{OwnersSelect}</div>
           </StatefulTooltip>
-        : ownersSelect
+        : OwnersSelect
       }
 
       <Checkbox

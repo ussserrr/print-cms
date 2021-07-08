@@ -14,12 +14,14 @@ import React from 'react';
 import { DateTime } from 'luxon';
 
 import { useStyletron } from 'baseui';
-import { Button, KIND } from 'baseui/button';
+import { Button, KIND as ButtonKind } from 'baseui/button';
 import { FormControl } from 'baseui/form-control';
 import { Slider } from 'baseui/slider';
 import { ListItem, ListItemLabel } from 'baseui/list';
 import { toaster } from 'baseui/toast';
 import { Paragraph2 } from 'baseui/typography';
+import { Notification, KIND as NotificationKind } from 'baseui/notification';
+import { StatefulTooltip } from 'baseui/tooltip';
 
 import { useQuery } from 'urql';
 
@@ -43,14 +45,95 @@ export function LoadTesting() {
   const [requestsHistory, setRequestsHistory] = React.useState<PrintRequest[]>([]);
 
 
-  const [{ data: templatesData, error: templatesError }] = useQuery<ListData, ListQueryVars>({
-    query: LIST_QUERY, variables: { filter: { active: true } }
+  const [{ data: templatesData, error: templatesError }, getTemplates] = useQuery<ListData, ListQueryVars>({
+    query: LIST_QUERY, variables: { filter: { active: true } },
+    pause: true,
+    requestPolicy: 'network-only'
   });
   const templates = templatesData?.templateTypes.items;
 
   React.useEffect(() => {
     if (templatesError) toaster.negative('Ошибка запроса печатных шаблонов: ' + templatesError.message, {});
   }, [templatesError]);
+
+
+  const makeRequest = () => {
+    if (templates?.length) {
+      // Randomly pick a template
+      const template = templates[Math.floor(Math.random() * templates.length)];
+
+      // Asynchronously print it
+      print({ ...template, userId: USER_ID }).then(({ data, error }) => {
+        if (data?.printTemplateType.token) {
+          Object.assign(newHistoryEntry, {  // modify an existing entry
+            state: 'REGISTERED',
+            registeredAt: DateTime.now(),
+            token: data.printTemplateType.token
+          });
+        } else if (error) {
+          Object.assign(newHistoryEntry, {  // modify an existing entry
+            state: 'ERROR',
+            errorAt: DateTime.now(),
+            error
+          });
+        }
+        setRequestsHistory(current => Array.from(current));
+      });
+
+      // Create an associated history entry
+      const newHistoryEntry: PrintRequest = {
+        state: 'REQUESTED',
+        requestedAt: DateTime.now(),
+        template
+      };
+
+      // Update the history
+      setRequestsHistory(current => current.concat(newHistoryEntry));
+
+      // Plan the next request
+      runRequestsTimer();
+      // const newTimeout = Math.floor(Math.random() * requestsTimerWindow * 1000);
+      // const timer = window.setTimeout(makeRequest, newTimeout);
+      // setTimeToNextRequest(newTimeout);
+      // setRequestsTimerId(timer);
+      // console.log('Requests timer started, id:', timer, 'timeout:', newTimeout);
+    }
+  }
+
+  const runRequestsTimer = () => {
+    const newTimeout = Math.floor(Math.random() * requestsTimerWindow * 1000);
+    const timer = window.setTimeout(makeRequest, newTimeout);
+    setTimeToNextRequest(newTimeout);
+    setRequestsTimerId(timer);
+    console.log('Requests timer started, id:', timer, 'timeout:', newTimeout);
+  }
+
+  const stopRequestTimer = React.useCallback(() => {
+    window.clearTimeout(requestsTimerId);
+    console.log('Requests timer cleared, id:', requestsTimerId);
+    setTimeToNextRequest(undefined);
+    setRequestsTimerId(undefined);
+  }, [requestsTimerId]);
+
+  const toggleRequestsTimer = () => {
+    if (requestsTimerId) {
+      stopRequestTimer();
+    } else {
+      makeRequest();
+    }
+  }
+
+
+  const disablingReasons = [{
+    condition: !templates?.length,
+    description: 'Отсутствуют подходящие шаблоны'
+  }, {
+    condition: sseState !== EventSource.OPEN,
+    description: 'SSE-подключение отсутствует'
+  }, {
+    condition: !sseInstance?.url.endsWith(USER_ID.toString()),
+    description: 'UserID текущего SSE-соединения и сгенерированный не совпадают'
+  }];
 
 
   /**
@@ -61,7 +144,10 @@ export function LoadTesting() {
       // console.log('Setup SSE...');
       const sse = new EventSource(API_URL + '/print/sse?userId=' + USER_ID.toString());
       setSseInstance(sse);
-      sse.addEventListener('open', () => setSseState(EventSource.OPEN));
+      sse.addEventListener('open', () => {
+        setSseState(EventSource.OPEN);
+        getTemplates();
+      });
       sse.addEventListener('error', () => setSseState(EventSource.CONNECTING));
       sse.addEventListener('message', event => {
         /**
@@ -106,65 +192,15 @@ export function LoadTesting() {
     //   console.log('unmount, SSE');
     //   if (sseInstance) sseInstance.close();
     // }
-  }, [sseInstance, requestsHistory]);
+  }, [sseInstance, requestsHistory, getTemplates]);
 
-
-  const makeRequest = () => {
-    if (templates?.length) {
-      // Randomly pick a template
-      const template = templates[Math.floor(Math.random() * templates.length)];
-
-      // Asynchronously print it
-      print({ ...template, userId: USER_ID }).then(({ data, error }) => {
-        if (data?.printTemplateType.token) {
-          Object.assign(newHistoryEntry, {  // modify an existing entry
-            state: 'REGISTERED',
-            registeredAt: DateTime.now(),
-            token: data.printTemplateType.token
-          });
-        } else if (error) {
-          Object.assign(newHistoryEntry, {  // modify an existing entry
-            state: 'ERROR',
-            errorAt: DateTime.now(),
-            error
-          });
-        }
-        setRequestsHistory(current => Array.from(current));
-      });
-
-      // Create an associated history entry
-      const newHistoryEntry: PrintRequest = {
-        state: 'REQUESTED',
-        requestedAt: DateTime.now(),
-        template
-      };
-
-      // Update the history
-      setRequestsHistory(current => current.concat(newHistoryEntry));
-
-      // Plan the next request
-      runRequestsTimer();
+  React.useEffect(() => {
+    if (sseState === EventSource.CONNECTING) {
+      // Doesn't work if placed inside "error" SSE event listener (see effect above)
+      // so need to define this dedicated effect
+      stopRequestTimer();
     }
-  }
-
-  const runRequestsTimer = () => {
-    const newTimeout = Math.floor(Math.random() * requestsTimerWindow * 1000);
-    const timer = window.setTimeout(makeRequest, newTimeout);
-    setTimeToNextRequest(newTimeout);
-    setRequestsTimerId(timer);
-    // console.log('Requests timer started, id:', timer, 'timeout:', newTimeout);
-  }
-
-  const toggleRequestsTimer = () => {
-    if (requestsTimerId) {
-      window.clearTimeout(requestsTimerId);
-      // console.log('Requests timer cleared, id:', requestsTimerId);
-      setTimeToNextRequest(undefined);
-      setRequestsTimerId(undefined);
-    } else {
-      makeRequest();
-    }
-  }
+  }, [sseState, stopRequestTimer]);
 
 
   /**
@@ -188,6 +224,17 @@ export function LoadTesting() {
       setTimeToNextRequestTimerId(undefined);
     }
   }, [requestsTimerId, timeToNextRequestTimerId]);
+
+
+  const PlayButton =
+    <Button
+      disabled={disablingReasons.some(reason => reason.condition)}
+      onClick={toggleRequestsTimer}
+      kind={requestsTimerId === undefined ? ButtonKind.secondary : ButtonKind.primary}
+      overrides={{ Root: { style: { width: '10rem' }}}}
+    >
+      {requestsTimerId === undefined ? '▶️ Начать' : '■ Остановить'}
+    </Button>;
 
 
   return (
@@ -219,18 +266,25 @@ export function LoadTesting() {
             justifyContent: 'space-between',
             marginBlockEnd: '2rem'
           })}>
-            <Button
-              disabled={
-                !templates?.length ||
-                sseState !== EventSource.OPEN ||
-                !sseInstance?.url.endsWith(USER_ID.toString())
-              }
-              onClick={toggleRequestsTimer}
-              kind={requestsTimerId === undefined ? KIND.secondary : KIND.primary}
-              overrides={{ Root: { style: { width: '10rem' }}}}
-            >
-              {requestsTimerId === undefined ? '▶️ Начать' : '■ Остановить'}
-            </Button>
+            {
+              disablingReasons.some(reason => reason.condition)
+              ? <StatefulTooltip
+                  accessibilityType='tooltip'
+                  onMouseEnterDelay={0}
+                  onMouseLeaveDelay={0}
+                  content={
+                    <Notification kind={NotificationKind.negative}>
+                      <ul className={css({ margin: 0 })}>{disablingReasons
+                        .filter(reason => reason.condition)
+                        .map((reason, idx) => <li key={idx}>{reason.description}</li>)
+                      }</ul>
+                    </Notification>
+                  }
+                >
+                  <div>{PlayButton}</div>
+                </StatefulTooltip>
+              : PlayButton
+            }
 
             <HelpButton overrides={{ Root: { style: { width: '10rem' }}}} />
           </div>
