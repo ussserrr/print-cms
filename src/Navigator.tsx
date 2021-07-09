@@ -16,7 +16,7 @@ import { Button } from 'baseui/button';
 import { Modal, ModalBody, ModalHeader } from 'baseui/modal';
 import { StatefulMenu } from 'baseui/menu';
 
-import { ROUTES } from './routes2';
+import { ROUTES } from './routes';
 import { useScreenSize } from './util/Hooks';
 import { EXTERNAL_LINK_SYMBOL, MODAL_CLOSE_TIMEOUT_MS } from './util/constants';
 

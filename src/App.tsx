@@ -15,8 +15,7 @@ import {
 } from 'baseui/toast';
 
 import { Main } from './Main';
-import { API_URL } from './routes';
-import { routerTitleCallback, ROUTES } from './routes2';
+import { API_URL, routerTitleCallback, ROUTES } from './routes';
 
 
 const styletronDebug = process.env.NODE_ENV === 'production' ? void 0 : new DebugEngine();

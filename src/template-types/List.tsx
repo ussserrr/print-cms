@@ -7,14 +7,11 @@ import { toaster } from 'baseui/toast';
 import { gql, useQuery } from 'urql';
 
 import * as gqlSchema from 'src/graphql-schema';
-// import { useBreadcrumbs } from 'src/Breadcrumbs';
 import TablePreHeader from 'src/util/TablePreHeader';
 import { Filter } from './Filter';
 import { Table } from './Table';
 import { Dialog as CreateDialog, Props as CreateDialogProps, MutationData } from './dialogs/Create'
 
-
-const KEY = 'Список';
 
 interface ListData {
   templateTypes: gqlSchema.TemplateTypesPageResult;
@@ -52,7 +49,6 @@ const QUERY = gql`
 
 export function List() {
   // console.log('List props', props);  // TODO: try to use { history, location, match } provided to the component by react-router
-  // useBreadcrumbs(KEY);
 
   const history = useHistory();
   const location = useLocation();
