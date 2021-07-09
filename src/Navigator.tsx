@@ -1,6 +1,8 @@
 import * as React from 'react';
 
-import { useHistory, useLocation } from 'react-router-dom';
+import type { RouteComponentProps } from 'react-router-dom';
+
+import type { History } from 'history';
 
 import { StyleObject } from 'styletron-standard';
 import { Navigation } from 'baseui/side-navigation';
@@ -15,14 +17,15 @@ import { Button } from 'baseui/button';
 import { Modal, ModalBody, ModalHeader } from 'baseui/modal';
 import { StatefulMenu } from 'baseui/menu';
 
-import { ROUTES } from './routes';
+import { ROUTES } from './routes2';
 import { useScreenSize } from './util/Hooks';
 import { EXTERNAL_LINK_SYMBOL, MODAL_CLOSE_TIMEOUT_MS } from './util/constants';
 
 
-function MobileMenu({ close }: { close: () => void }) {
-  const history = useHistory();
+const SIDEBAR_ROUTES = ROUTES.slice(0, ROUTES.length - 1);  // exclude NotFound page
 
+
+function MobileMenu({ close, history }: { close: () => void, history: History }) {
   const [isOpen, setIsOpen] = React.useState(true);
 
   React.useEffect(() => {
@@ -66,12 +69,15 @@ function MobileMenu({ close }: { close: () => void }) {
               }
             }
           }}
-          items={ROUTES.map(({ title, path: href, external }) => ({
-            label: external ? (title + ' ' + EXTERNAL_LINK_SYMBOL) : title,
-            href
-          }))}
+          items={
+            SIDEBAR_ROUTES
+              .map(({ title, path: href, external }) => ({
+                label: external ? (title + ' ' + EXTERNAL_LINK_SYMBOL) : title,
+                href
+              }))
+          }
           onItemSelect={({ item, event }) => {
-            if (item.label.endsWith(EXTERNAL_LINK_SYMBOL)) {  // TODO: take out to util (EXTERNAL_LINK_SYMBOL const)
+            if (item.label.endsWith(EXTERNAL_LINK_SYMBOL)) {
               // External link will be opened (in the same window)
             } else {
               event?.preventDefault();
@@ -86,10 +92,11 @@ function MobileMenu({ close }: { close: () => void }) {
 }
 
 
-export function Navigator({ style }: { style?: StyleObject }) {
-  const history = useHistory();
-  const location = useLocation();
+type Props = {
+  style?: StyleObject
+} & RouteComponentProps;
 
+export function Navigator({ style, match, history }: Props) {
   const size = useScreenSize();
 
   return (
@@ -106,13 +113,16 @@ export function Navigator({ style }: { style?: StyleObject }) {
             }
           }
         }}
-        items={ROUTES.map(({ title, path: itemId, external }) => ({
-          title: external ? (title + ' ' + EXTERNAL_LINK_SYMBOL) : title,
-          itemId
-        }))}
-        activeItemId={ROUTES.find(r => location.pathname.startsWith(r.path))?.path ?? location.pathname}
+        items={
+          SIDEBAR_ROUTES
+            .map(({ title, path: itemId, external }) => ({
+              title: external ? (title + ' ' + EXTERNAL_LINK_SYMBOL) : title,
+              itemId
+            }))
+        }
+        activeItemId={match.path}
         onChange={({ item, event }) => {
-          if (item.title.endsWith(EXTERNAL_LINK_SYMBOL)) {  // TODO: take out to util (EXTERNAL_LINK_SYMBOL const)
+          if (item.title.endsWith(EXTERNAL_LINK_SYMBOL)) {
             // External link will be opened (in the same window)
           } else {
             event.preventDefault();
@@ -125,7 +135,7 @@ export function Navigator({ style }: { style?: StyleObject }) {
         <StyledNavigationList>
           <StyledNavigationItem $align={ALIGN.left}>
             {/* TODO: why Popover? for what? */}
-            <StatefulPopover content={({ close }) => <MobileMenu close={close} />} >
+            <StatefulPopover content={({ close }) => <MobileMenu close={close} history={history} />} >
               <Button overrides={{ Root: { props: { title: 'Меню' } } }}>
                 ☰ Меню
               </Button>

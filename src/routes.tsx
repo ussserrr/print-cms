@@ -2,7 +2,7 @@ import { Switch, Route } from 'react-router-dom';
 
 import { List } from './template-types/List';
 import { Card } from './template-types/Card';
-import { useBreadcrumbs } from './Breadcrumbs';
+// import { useBreadcrumbs } from './Breadcrumbs';
 import { LoadTesting } from './load-testing';
 import ServiceConfiguration from './config/index';  // TODO: conflicting names
 
@@ -31,7 +31,7 @@ function RouteWithSubRoutes(route: RouteNode) {
 }
 
 export function RenderRoutes({ routes }: { routes: RouteNode[] }) {
-  useBreadcrumbs('Шаблоны');
+  // useBreadcrumbs('Шаблоны');
 
   return (
     <Switch>

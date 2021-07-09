@@ -1,10 +1,10 @@
 import * as React from 'react';
 
-import { withRouter } from 'react-router-dom';
+import { Route, Switch, withRouter } from 'react-router-dom';
 
 import { useStyletron } from 'baseui';
 
-import { RenderRoutes, ROUTES } from './routes';
+import { RenderRoutes, ROUTES } from './routes2';
 import { useScreenSize } from './util/Hooks';
 import { Navigator } from './Navigator';
 import { BreadcrumbsProvider, BreadcrumbsHeader } from './Breadcrumbs';
@@ -37,14 +37,25 @@ export const Main = withRouter(() => {
               width: '20%'
             } : {})
           })}>
-            <Navigator style={
-              (size > 640) ? {
-                paddingTop: '30px',  // shorthand is conflicting with internal styling
-                paddingRight: '5%',
-                paddingBottom: '0',
-                paddingLeft: '5%'
-              } : {}
-            } />
+            <Switch>
+              {ROUTES.map((route, index) =>
+                <Route
+                  key={index}
+                  path={route.path}
+                  exact={route.exact}
+                  render={props =>
+                    <Navigator {...props} style={
+                      (size > 640) ? {
+                        paddingTop: '30px',  // shorthand is conflicting with internal styling
+                        paddingRight: '5%',
+                        paddingBottom: '0',
+                        paddingLeft: '5%'
+                      } : {}
+                    } />
+                  }
+                />
+              )}
+            </Switch>
           </div>
 
           <div className={css({
@@ -60,7 +71,7 @@ export const Main = withRouter(() => {
                 height: 'calc(100vh - (30px * 2))'
               } : {})
             })}>
-              <BreadcrumbsHeader />
+              {/* <BreadcrumbsHeader /> */}
 
               <RenderRoutes routes={ROUTES} />
             </div>

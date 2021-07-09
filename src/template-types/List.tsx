@@ -7,7 +7,7 @@ import { toaster } from 'baseui/toast';
 import { gql, useQuery } from 'urql';
 
 import * as gqlSchema from 'src/graphql-schema';
-import { useBreadcrumbs } from 'src/Breadcrumbs';
+// import { useBreadcrumbs } from 'src/Breadcrumbs';
 import TablePreHeader from 'src/util/TablePreHeader';
 import { Filter } from './Filter';
 import { Table } from './Table';
@@ -51,7 +51,8 @@ const QUERY = gql`
 
 
 export function List() {
-  useBreadcrumbs(KEY);
+  // console.log('List props', props);  // TODO: try to use { history, location, match } provided to the component by react-router
+  // useBreadcrumbs(KEY);
 
   const history = useHistory();
   const location = useLocation();

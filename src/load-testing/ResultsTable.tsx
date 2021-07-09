@@ -41,8 +41,7 @@ export default function ResultsTable({ requestsHistory, requestsTimerId }: Props
         },
         TableBodyRow: {
           /**
-           * TODO:
-           * Only applicable to the light theme!
+           * TODO: This is only applicable to the light theme!
            */
           style: ({ $theme, $rowIndex }: { $theme: Theme, $rowIndex: number }) => {
             const row = requestsHistory[$rowIndex];

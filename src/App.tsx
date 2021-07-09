@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { BrowserRouter as Router } from 'react-router-dom';
+import RouterTitle from 'react-router-title';
 
 import { createClient, dedupExchange, cacheExchange, Provider as UrqlProvider } from 'urql';
 import { multipartFetchExchange } from '@urql/exchange-multipart-fetch';
@@ -15,6 +16,7 @@ import {
 
 import { Main } from './Main';
 import { API_URL } from './routes';
+import { routerTitleCallback, ROUTES } from './routes2';
 
 
 const styletronDebug = process.env.NODE_ENV === 'production' ? void 0 : new DebugEngine();
@@ -30,6 +32,7 @@ function App() {
   return (
     <UrqlProvider value={gqlClient}>
       <Router>
+        <RouterTitle pageTitle='Печатные шаблоны' routesConfig={ROUTES} callback={routerTitleCallback} />
         <StyletronProvider value={engine} debug={styletronDebug} debugAfterHydration>
           <BaseProvider theme={Theme}>
             <LocaleProvider locale={{

@@ -11,7 +11,7 @@ import { gql, useQuery } from 'urql';
 
 import * as gqlSchema from 'src/graphql-schema';
 import { useScreenSize } from 'src/util/Hooks';
-import { useBreadcrumbs } from 'src/Breadcrumbs';
+// import { useBreadcrumbs } from 'src/Breadcrumbs';
 import TablePreHeader from 'src/util/TablePreHeader';
 import Loader from 'src/util/Loader';
 import ErrorsList from 'src/util/ErrorsList';
@@ -59,7 +59,7 @@ const TEMPLATE_TYPE = gql`
 
 
 export function Card() {
-  const { templateTypeId } = useParams<{templateTypeId: string}>();
+  const { id } = useParams<{id: string}>();
 
   const history = useHistory();
   const location = useLocation();
@@ -78,11 +78,11 @@ export function Card() {
 
   const [{ data, fetching, error, stale }] = useQuery<TemplateTypeData, QueryVars>({
     query: TEMPLATE_TYPE,
-    variables: { id: templateTypeId },
+    variables: { id },
     pause: removeDialogIsOpen || someFileRemovalDialogIsOpen
   });
 
-  useBreadcrumbs(KEY, data?.templateType?.title ?? KEY);
+  // useBreadcrumbs(KEY, data?.templateType?.title ?? KEY);
 
   React.useEffect(() => {
     setFiles(data?.templateType?.pageOfFiles?.items ?? []);
