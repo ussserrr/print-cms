@@ -12,7 +12,6 @@ import {
   StyledNavigationList,
   StyledNavigationItem
 } from 'baseui/header-navigation';
-import { StatefulPopover } from 'baseui/popover';
 import { Button } from 'baseui/button';
 import { Modal, ModalBody, ModalHeader } from 'baseui/modal';
 import { StatefulMenu } from 'baseui/menu';
@@ -25,69 +24,88 @@ import { EXTERNAL_LINK_SYMBOL, MODAL_CLOSE_TIMEOUT_MS } from './util/constants';
 const SIDEBAR_ROUTES = ROUTES.slice(0, ROUTES.length - 1);  // exclude NotFound page
 
 
-function MobileMenu({ close, history }: { close: () => void, history: History }) {
-  const [isOpen, setIsOpen] = React.useState(true);
+function MobileMenu({ history }: { history: History }) {
+  const [isOpen, setIsOpen] = React.useState(false);
+  const [isRendered, setIsRendered] = React.useState(false);
 
-  React.useEffect(() => {
-    if (!isOpen) {
-      setTimeout(close, MODAL_CLOSE_TIMEOUT_MS);
+  const close = (immediate=true) => {
+    setIsOpen(false);
+    if (immediate) {
+      setIsRendered(false);
+    } else {
+      setTimeout(setIsRendered, MODAL_CLOSE_TIMEOUT_MS, false);
     }
-  }, [isOpen, close]);
+  }
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={() => setIsOpen(false)}
-      overrides={{
-        Close: {
-          component: () => null
-        },
-        Dialog: {
-          style: {
-            width: '70vw',
-            textAlign: 'center'
-          }
-        }
-      }}
-      unstable_ModalBackdropScroll={true}  // TODO
-    >
-      <ModalHeader>Меню</ModalHeader>
-      <ModalBody>
-        <StatefulMenu
-          overrides={{
-            List: {
-              style: {
-                boxShadow: 'none'
+    <>
+      <Button
+        overrides={{ Root: { props: { title: 'Меню' }}}}
+        onClick={() => {
+          setIsRendered(true);
+          setIsOpen(true);
+        }}
+      >
+        ☰ Меню
+      </Button>
+      {
+        isRendered
+        ? <Modal
+            isOpen={isOpen}
+            onClose={() => close(false)}
+            overrides={{
+              Close: {
+                component: () => null
+              },
+              Dialog: {
+                style: {
+                  width: '70vw',
+                  textAlign: 'center'
+                }
               }
-            },
-            ListItem: {
-              style: {  // verbose form to prevent console warnings
-                paddingTop: '1.5rem',
-                paddingBottom: '1.5rem',
-                paddingLeft: '0',
-                paddingRight: '0'
-              }
-            }
-          }}
-          items={
-            SIDEBAR_ROUTES
-              .map(({ title, path: href, external }) => ({
-                label: external ? (title + ' ' + EXTERNAL_LINK_SYMBOL) : title,
-                href
-              }))
-          }
-          onItemSelect={({ item, event }) => {
-            if (item.label.endsWith(EXTERNAL_LINK_SYMBOL)) {
-              // External link will be opened (in the same window)
-            } else {
-              event?.preventDefault();
-              setIsOpen(false);
-              history.push(item.href);
-            }
-          }}
-        />
-      </ModalBody>
-    </Modal>
+            }}
+            unstable_ModalBackdropScroll={true}  // TODO
+          >
+            <ModalHeader>Меню</ModalHeader>
+            <ModalBody>
+              <StatefulMenu
+                overrides={{
+                  List: {
+                    style: {
+                      boxShadow: 'none'
+                    }
+                  },
+                  ListItem: {
+                    style: {  // verbose form to prevent console warnings
+                      paddingTop: '1.5rem',
+                      paddingBottom: '1.5rem',
+                      paddingLeft: '0',
+                      paddingRight: '0'
+                    }
+                  }
+                }}
+                items={
+                  SIDEBAR_ROUTES
+                    .map(({ title, path: href, external }) => ({
+                      label: external ? (title + ' ' + EXTERNAL_LINK_SYMBOL) : title,
+                      href
+                    }))
+                }
+                onItemSelect={({ item, event }) => {
+                  if (item.label.endsWith(EXTERNAL_LINK_SYMBOL)) {
+                    // External link will be opened (in the same window)
+                  } else {
+                    event?.preventDefault();
+                    close();
+                    history.push(item.href);
+                  }
+                }}
+              />
+            </ModalBody>
+          </Modal>
+        : null
+      }
+    </>
   );
 }
 
@@ -134,12 +152,7 @@ export function Navigator({ style, match, history }: Props) {
     : <HeaderNavigation>
         <StyledNavigationList>
           <StyledNavigationItem $align={ALIGN.left}>
-            {/* TODO: why Popover? for what? */}
-            <StatefulPopover content={({ close }) => <MobileMenu close={close} history={history} />} >
-              <Button overrides={{ Root: { props: { title: 'Меню' } } }}>
-                ☰ Меню
-              </Button>
-            </StatefulPopover>
+            <MobileMenu history={history} />
           </StyledNavigationItem>
         </StyledNavigationList>
       </HeaderNavigation>
