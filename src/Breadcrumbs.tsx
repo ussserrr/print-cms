@@ -13,7 +13,10 @@ import { ROUTES } from './routes';
 
 export default function BreadcrumbsHeader() {
   const history = useHistory();
-  const breadcrumbs = useBreadcrumbs(ROUTES);
+  let breadcrumbs = useBreadcrumbs(ROUTES);
+  // console.log('breadcrumbs', breadcrumbs);
+
+  breadcrumbs = breadcrumbs.filter(({ match }) => _.get(match, 'path') !== '*');
 
   return (
     <Breadcrumbs overrides={{
