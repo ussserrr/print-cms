@@ -7,8 +7,8 @@ import { Input } from 'baseui/input';
 import { useFormik } from 'formik';
 
 import * as gqlSchema from 'src/graphql-schema';
-import { ServiceConfigContext } from 'src/config';
-import { EntityActionDialog, PublicProps } from 'src/util/EntityActionDialog';
+import { ServiceConfigContext } from 'src/config/data';
+import { EntityActionDialog, PublicProps } from 'src/util/widgets/EntityActionDialog';
 import type { CreateData, CreateVars } from '../data';
 import { CreateMutation } from '../data';
 

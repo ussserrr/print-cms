@@ -5,7 +5,7 @@ import { OptionsT } from 'baseui/select';
 
 import { Duration, DurationObject } from 'luxon';
 
-import { API_URL } from './routes';
+import { API_URL } from 'src/routes';
 
 
 type ServiceConfig =
@@ -22,7 +22,7 @@ type ServiceConfig =
       owners: OptionsT[];
     }
   | { loading: true }
-  | { error: Error }
+  | { error: Error };
 
 export const serviceConfigDescription = {
   filesToKeep: 'Максимальное количество файлов на шаблон',

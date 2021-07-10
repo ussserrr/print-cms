@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import _ from 'lodash';
 
 import { useHistory } from 'react-router-dom';
@@ -8,7 +6,7 @@ import useBreadcrumbs from 'use-react-router-breadcrumbs';
 import { Breadcrumbs } from 'baseui/breadcrumbs';
 import { StyledLink } from 'baseui/link';
 
-import { ROUTES } from './routes';
+import { ROUTES } from 'src/routes';
 
 
 export default function BreadcrumbsHeader() {

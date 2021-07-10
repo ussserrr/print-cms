@@ -5,10 +5,10 @@ import { Route, Switch, withRouter } from 'react-router-dom';
 import { useStyletron } from 'baseui';
 
 import { RenderRoutes, ROUTES } from './routes';
-import { useScreenSize } from './util/Hooks';
-import { Navigator } from './Navigator';
-import BreadcrumbsHeader from './Breadcrumbs';
-import { ServiceConfigProvider } from './config';
+import { useScreenSize } from './util/hooks';
+import { Navigator } from './util/widgets/Navigator';
+import BreadcrumbsHeader from './util/widgets/Breadcrumbs';
+import { ServiceConfigProvider } from './config/data';
 
 
 export const Main = withRouter(() => {

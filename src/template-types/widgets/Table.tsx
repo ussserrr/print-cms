@@ -6,8 +6,8 @@ import { StyledLink } from 'baseui/link';
 import { CombinedError } from 'urql';
 
 import * as gqlSchema from 'src/graphql-schema';
-import Loader from 'src/util/Loader';
-import ErrorsList from 'src/util/ErrorsList';
+import Loader from 'src/util/widgets/Loader';
+import ErrorsList from 'src/util/widgets/ErrorsList';
 
 
 function muteOnNonActive(

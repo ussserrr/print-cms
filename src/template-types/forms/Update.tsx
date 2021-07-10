@@ -15,8 +15,8 @@ import { useMutation } from 'urql';
 import { useFormik } from 'formik';
 
 import * as gqlSchema from 'src/graphql-schema';
-import { EntityActionForm } from 'src/util/EntityActionForm';
-import { useScreenSize } from 'src/util/Hooks';
+import { EntityActionForm } from 'src/util/widgets/EntityActionForm';
+import { useScreenSize } from 'src/util/hooks';
 import { UpdateData, UpdateMutation, UpdateVars } from '../data';
 
 

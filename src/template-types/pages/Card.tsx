@@ -10,10 +10,10 @@ import { Button } from 'baseui/button';
 import { useQuery } from 'urql';
 
 import * as gqlSchema from 'src/graphql-schema';
-import { useScreenSize } from 'src/util/Hooks';
-import TablePreHeader from 'src/util/TablePreHeader';
-import Loader from 'src/util/Loader';
-import ErrorsList from 'src/util/ErrorsList';
+import { useScreenSize } from 'src/util/hooks';
+import TablePreHeader from 'src/util/widgets/TablePreHeader';
+import Loader from 'src/util/widgets/Loader';
+import ErrorsList from 'src/util/widgets/ErrorsList';
 import * as CreateFile from 'src/template-files/dialogs/Create';
 import { Table as FilesTable } from 'src/template-files/widgets/Table';
 import * as Update from '../forms/Update';

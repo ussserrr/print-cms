@@ -9,7 +9,7 @@ import { KIND } from 'baseui/button';
 
 import { useMutation } from 'urql';
 
-import { MODAL_CLOSE_TIMEOUT_MS } from './constants';
+import { MODAL_CLOSE_TIMEOUT_MS } from '../constants';
 import { EntityActionForm } from './EntityActionForm';
 
 

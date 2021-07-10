@@ -16,9 +16,9 @@ import { Button } from 'baseui/button';
 import { Modal, ModalBody, ModalHeader } from 'baseui/modal';
 import { StatefulMenu } from 'baseui/menu';
 
-import { ROUTES } from './routes';
-import { useScreenSize } from './util/Hooks';
-import { EXTERNAL_LINK_SYMBOL, MODAL_CLOSE_TIMEOUT_MS } from './util/constants';
+import { ROUTES } from 'src/routes';
+import { useScreenSize } from 'src/util/hooks';
+import { EXTERNAL_LINK_SYMBOL, MODAL_CLOSE_TIMEOUT_MS } from 'src/util/constants';
 
 
 const SIDEBAR_ROUTES = ROUTES.slice(0, ROUTES.length - 1);  // exclude NotFound page

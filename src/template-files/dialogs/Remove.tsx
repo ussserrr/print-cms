@@ -3,7 +3,7 @@ import * as React from 'react';
 import _ from 'lodash';
 
 import * as gqlSchema from 'src/graphql-schema';
-import { EntityActionDialog, PublicProps } from 'src/util/EntityActionDialog';
+import { EntityActionDialog, PublicProps } from 'src/util/widgets/EntityActionDialog';
 import { RemoveMutation, RemoveVars } from '../data';
 
 

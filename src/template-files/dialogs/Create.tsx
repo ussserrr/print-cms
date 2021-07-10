@@ -13,8 +13,8 @@ import { FileUploader } from 'baseui/file-uploader';
 import { useFormik } from 'formik';
 
 import * as gqlSchema from 'src/graphql-schema';
-import { EntityActionDialog, PublicProps } from 'src/util/EntityActionDialog';
-import { ServiceConfigContext } from 'src/config';
+import { EntityActionDialog, PublicProps } from 'src/util/widgets/EntityActionDialog';
+import { ServiceConfigContext } from 'src/config/data';
 import { CreateMutation, CreateVars } from '../data';
 
 

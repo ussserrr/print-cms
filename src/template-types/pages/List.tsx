@@ -7,7 +7,7 @@ import { toaster } from 'baseui/toast';
 import { useQuery } from 'urql';
 
 import * as gqlSchema from 'src/graphql-schema';
-import TablePreHeader from 'src/util/TablePreHeader';
+import TablePreHeader from 'src/util/widgets/TablePreHeader';
 import { Filter } from '../widgets/Filter';
 import { Table } from '../widgets/Table';
 import { Dialog as CreateDialog, Props as CreateDialogProps } from '../dialogs/Create'

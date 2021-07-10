@@ -10,8 +10,8 @@ import { Checkbox } from 'baseui/checkbox';
 import { CombinedError } from 'urql';
 
 import * as gqlSchema from 'src/graphql-schema';
-import { ServiceConfigContext } from 'src/config';
-import Loader from 'src/util/Loader';
+import { ServiceConfigContext } from 'src/config/data';
+import Loader from 'src/util/widgets/Loader';
 import { Actions } from './Actions';
 
 

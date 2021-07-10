@@ -9,7 +9,7 @@ import { StatefulPopover } from 'baseui/popover';
 import { Paragraph2 } from 'baseui/typography';
 
 import { API_URL } from 'src/routes';
-import { useScreenSize } from 'src/util/Hooks';
+import { useScreenSize } from 'src/util/hooks';
 import { PrintRequest } from '../data';
 
 

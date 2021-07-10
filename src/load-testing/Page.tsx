@@ -26,7 +26,7 @@ import { StatefulTooltip } from 'baseui/tooltip';
 import { useQuery } from 'urql';
 
 import { API_URL } from 'src/routes';
-import { useScreenSize } from 'src/util/Hooks';
+import { useScreenSize } from 'src/util/hooks';
 import { FindData, FindQuery, FindVars } from 'src/template-types/data';
 import { print } from './data';
 import type { PrintRequest } from './data';

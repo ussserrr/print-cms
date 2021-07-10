@@ -5,7 +5,7 @@ import * as _ from 'lodash';
 import { Notification } from 'baseui/notification';
 import { TreeView, TreeNode, toggleIsExpanded } from 'baseui/tree-view';
 
-import { ServiceConfigContext, serviceConfigDescription } from 'src/config';
+import { ServiceConfigContext, serviceConfigDescription } from 'src/config/data';
 import { Paragraph2 } from 'baseui/typography';
 
 
