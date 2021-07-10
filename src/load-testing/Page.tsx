@@ -28,9 +28,15 @@ import { useQuery } from 'urql';
 import { API_URL } from 'src/routes';
 import { useScreenSize } from 'src/util/Hooks';
 import { FindData, FindQuery, FindVars } from 'src/template-types/data';
-import { print, PrintRequest, REQUESTS_TIMER_WINDOW_DEFAULT, TIME_TO_NEXT_REQUEST_RENDER_INTERVAL, USER_ID } from './definitions';
-import HelpButton from './HelpButton';
-import ResultsTable from './ResultsTable';
+import { print } from './data';
+import type { PrintRequest } from './data';
+import HelpButton from './widgets/HelpButton';
+import ResultsTable from './widgets/ResultsTable';
+
+
+const USER_ID = Math.floor(Math.random() * 10000);
+const REQUESTS_TIMER_WINDOW_DEFAULT = 20;  // seconds
+const TIME_TO_NEXT_REQUEST_RENDER_INTERVAL = 100;  // ms
 
 
 export function LoadTesting() {

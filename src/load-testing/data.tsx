@@ -6,11 +6,6 @@ import * as gqlSchema from 'src/graphql-schema';
 import { gqlClient } from 'src/App';
 
 
-export const USER_ID = Math.floor(Math.random() * 10000);
-export const REQUESTS_TIMER_WINDOW_DEFAULT = 20;  // seconds
-export const TIME_TO_NEXT_REQUEST_RENDER_INTERVAL = 100;  // ms
-
-
 export type PrintRequest = {
   state: 'REQUESTED';
   requestedAt: DateTime;

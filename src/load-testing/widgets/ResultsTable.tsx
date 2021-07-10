@@ -10,7 +10,7 @@ import { Paragraph2 } from 'baseui/typography';
 
 import { API_URL } from 'src/routes';
 import { useScreenSize } from 'src/util/Hooks';
-import { PrintRequest } from './definitions';
+import { PrintRequest } from '../data';
 
 
 type Props = {

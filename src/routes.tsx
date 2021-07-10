@@ -15,10 +15,10 @@ import { useQuery } from 'urql';
 
 import { H5, Display2, Paragraph2 } from 'baseui/typography';
 
-import { List as TemplateTypesList } from './template-types/List';
-import { Card as TemplateTypeCard } from './template-types/Card';
+import { List as TemplateTypesList } from './template-types/pages/List';
+import { Card as TemplateTypeCard } from './template-types/pages/Card';
 import Config from './config/index';  // TODO: conflicting modules names
-import { LoadTesting } from './load-testing';
+import { LoadTesting } from './load-testing/Page';
 import { GetData, GetQuery, getTemplateTypeById, GetVars } from './template-types/data';
 
 

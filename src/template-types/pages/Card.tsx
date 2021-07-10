@@ -15,10 +15,10 @@ import TablePreHeader from 'src/util/TablePreHeader';
 import Loader from 'src/util/Loader';
 import ErrorsList from 'src/util/ErrorsList';
 import * as CreateFile from 'src/template-files/dialogs/Create';
-import { Table as FilesTable } from 'src/template-files/Table';
-import * as Update from './forms/Update';
-import * as Remove from './dialogs/Remove';
-import { GetData, GetQuery, GetVars } from './data';
+import { Table as FilesTable } from 'src/template-files/widgets/Table';
+import * as Update from '../forms/Update';
+import * as Remove from '../dialogs/Remove';
+import { GetData, GetQuery, GetVars } from '../data';
 
 
 const STYLE = {

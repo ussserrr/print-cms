@@ -8,10 +8,10 @@ import { useQuery } from 'urql';
 
 import * as gqlSchema from 'src/graphql-schema';
 import TablePreHeader from 'src/util/TablePreHeader';
-import { Filter } from './Filter';
-import { Table } from './Table';
-import { Dialog as CreateDialog, Props as CreateDialogProps } from './dialogs/Create'
-import { FindData, FindVars, FindQuery, CreateData } from './data';
+import { Filter } from '../widgets/Filter';
+import { Table } from '../widgets/Table';
+import { Dialog as CreateDialog, Props as CreateDialogProps } from '../dialogs/Create'
+import { FindData, FindVars, FindQuery, CreateData } from '../data';
 
 
 export function List() {

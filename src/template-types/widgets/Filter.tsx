@@ -15,7 +15,7 @@ import { useFormik } from 'formik';
 
 import * as gqlSchema from 'src/graphql-schema';
 import { ServiceConfigContext } from 'src/config';
-import type { FindVars } from './data';
+import type { FindVars } from '../data';
 
 
 const MARGIN = '1rem';

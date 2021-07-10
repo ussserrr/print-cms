@@ -5,8 +5,8 @@ import { Button, SHAPE, SIZE } from 'baseui/button';
 
 import { API_URL } from 'src/routes';
 import * as gqlSchema from 'src/graphql-schema';
-import * as Update from './dialogs/Update';
-import * as Remove from './dialogs/Remove';
+import * as Update from '../dialogs/Update';
+import * as Remove from '../dialogs/Remove';
 
 
 type Props = {
