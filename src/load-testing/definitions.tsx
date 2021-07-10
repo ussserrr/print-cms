@@ -50,7 +50,7 @@ export interface ListQueryVars {
   options?: gqlSchema.TemplateTypesRequestOptions;
 }
 
-// TODO: should store all queries in one place
+// TODO: should store all queries in one place to reuse in different places
 export const LIST_QUERY = gql`
   query FindTemplateTypes(
     $filter: TemplateTypesFilter = {}

@@ -1,17 +1,21 @@
 /**
  * Routing mechanics stuff:
- *  - Core pattern is adopted from https://www.ryanjyost.com/react-routing/
+ *  - Core pattern is adopted from https://www.ryanjyost.com/react-routing
  *  - Document title management by https://github.com/lynoapp/react-router-title
  */
 
 import { Switch, Route } from 'react-router-dom';
+import { RouterTitleProps } from 'react-router-title';
+
+import _ from 'lodash';
+
+import { H5, Display2, Paragraph2 } from 'baseui/typography';
 
 import { List as TemplateTypesList } from './template-types/List';
 import { Card as TemplateTypeCard } from './template-types/Card';
 import Config from './config/index';  // TODO: conflicting modules names
 import { LoadTesting } from './load-testing';
-import { RouterTitleProps } from 'react-router-title';
-import { H5, Display2, Paragraph2 } from 'baseui/typography';
+import { getTemplateTypeById } from './queries';
 
 
 export const API_URL = process.env.REACT_APP_API_URL ?? '/api';
@@ -69,15 +73,20 @@ function _RouteChildren({ routes }: RouteNode) {
 }
 
 
-export const routerTitleCallback: RouterTitleProps['callback'] = (
-  {
-    title,  // Final title string which was generated
-    titles,  // All title strings from all routes and sub-routes as an array
-    params,  // Params from the last sub-route which has params
-  },
-  location  // Location object from router/history
-) => {
-  console.log('title:', title, 'titles:', titles, 'params:', params, 'location:', location);
+export const routerTitleCallback: RouterTitleProps['callback'] = async ({
+  title,   // Final title string which was generated
+  params,  // Params from the last sub-route which has params
+}) => {
+  /**
+   * TODO: This find/replace routine is not generic - we use here the fact
+   * that we have only one page with parameters
+   */
+  if (_.get(params, 'id') && title.includes('<Шаблон>')) {
+    const templateType = await getTemplateTypeById(_.get(params, 'id'));
+    if (templateType) {
+      title = title.replace('<Шаблон>', templateType.title);
+    }
+  }
   return title;
 }
 
@@ -131,7 +140,7 @@ export const ROUTES: RouteNode[] = [
         component: TemplateTypesList
       },
       {
-        title: 'Шаблон',
+        title: '<Шаблон>',
         breadcrumb: 'Шаблон',
         path: '/types/:id',
         exact: true,

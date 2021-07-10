@@ -188,7 +188,7 @@ export function LoadTesting() {
         }
       });
     }
-    // return () => {  // TODO: when implementing correct routing
+    // return () => {  // TODO: test when implementing correct routing
     //   console.log('unmount, SSE');
     //   if (sseInstance) sseInstance.close();
     // }
