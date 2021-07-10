@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import _ from 'lodash';
 
-import { useHistory, useLocation, useParams } from 'react-router-dom';
+import { RouteComponentProps, useParams } from 'react-router-dom';
 
 import { useStyletron } from 'baseui';
 import { Button } from 'baseui/button';
@@ -26,11 +26,8 @@ const STYLE = {
 };
 
 
-export function Card() {
+export function Card({ history, location }: RouteComponentProps) {
   const { id } = useParams<{id: string}>();
-
-  const history = useHistory();
-  const location = useLocation();
 
   const [css] = useStyletron();
   const size = useScreenSize();

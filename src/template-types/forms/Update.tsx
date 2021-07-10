@@ -137,7 +137,7 @@ export function Form({
         id: templateType.id,
         data: { active: true }
       }).then(() => {
-        history.replace(location.pathname);
+        history.replace(location.pathname);  // clear History context (state property)
         toaster.positive('Шаблон активирован и доступен для печати', {});
       });
     }

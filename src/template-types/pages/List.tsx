@@ -1,12 +1,11 @@
 import * as React from 'react';
 
-import { useHistory, useLocation } from 'react-router-dom';
+import { RouteComponentProps } from 'react-router-dom';
 
 import { toaster } from 'baseui/toast';
 
 import { useQuery } from 'urql';
 
-import * as gqlSchema from 'src/graphql-schema';
 import TablePreHeader from 'src/util/widgets/TablePreHeader';
 import { Filter } from '../widgets/Filter';
 import { Table } from '../widgets/Table';
@@ -14,12 +13,7 @@ import { Dialog as CreateDialog, Props as CreateDialogProps } from '../dialogs/C
 import { FindData, FindVars, FindQuery, CreateData } from '../data';
 
 
-export function List() {
-  // console.log('List props', props);  // TODO: try to use { history, location, match } provided to the component by react-router
-
-  const history = useHistory();
-  const location = useLocation();
-
+export function List({ history, location }: RouteComponentProps) {
   const [variables, setVariables] = React.useState<FindVars>();
 
   const [{ data, fetching, stale, error }] = useQuery<FindData, FindVars>({
@@ -70,9 +64,7 @@ export function List() {
         data={data?.templateTypes.items}
         isLoading={fetching || stale}
         error={error}
-        onItemSelect={(item: gqlSchema.TemplateType) => {
-          history.push(location.pathname + '/' + item.id);
-        }}
+        onItemSelect={item => history.push(location.pathname + '/' + item.id)}
       />
     </div>
   );

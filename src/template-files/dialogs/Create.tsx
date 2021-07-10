@@ -27,11 +27,6 @@ type FormData = {
   file?: File
 } & gqlSchema.CreateTemplateFileInput;
 
-/**
- * TODO:
- * These queries/mutations are not properly typed! Seems like we can type the function call
- * (i.e. tell the TS about expected types) but the actual string still will not be checked
- */
 
 export function Dialog(props: Props) {
   const [, theme] = useStyletron();
