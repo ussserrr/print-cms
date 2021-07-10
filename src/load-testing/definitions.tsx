@@ -41,37 +41,10 @@ export type PrintRequest = {
 };
 
 
-export interface ListData {
-  templateTypes: gqlSchema.TemplateTypesPageResult;
-}
-
-export interface ListQueryVars {
-  filter?: gqlSchema.TemplateTypesFilter;
-  options?: gqlSchema.TemplateTypesRequestOptions;
-}
-
-// TODO: should store all queries in one place to reuse in different places
-export const LIST_QUERY = gql`
-  query FindTemplateTypes(
-    $filter: TemplateTypesFilter = {}
-    $options: TemplateTypesRequestOptions = {}
-  ) {
-    templateTypes(
-      filter: $filter
-      options: $options
-    ) {
-      items {
-        id
-        title
-      }
-    }
-  }
-`;
-
-export function print(vars: PrintQueryVars) {
+export function print(vars: PrintVars) {
   return gqlClient
-    .query<PrintData, PrintQueryVars>(
-      PRINT_QUERY, vars,
+    .query<PrintData, PrintVars>(
+      PrintQuery, vars,
       { requestPolicy: 'network-only' }
     )
     .toPromise();
@@ -82,17 +55,23 @@ export interface PrintData {
   printTemplateType: gqlSchema.PrintOutput;
 }
 
-export interface PrintQueryVars {
+export interface PrintVars {
   id: string;
   userId: number;
   fillData?: object;
 }
 
-export const PRINT_QUERY = gql`
+export const PrintQuery = gql`
   query PrintTemplateType(
-    $id: ID!, $userId: Int!, $fillData: JSON = {}
+    $id: ID!,
+    $userId: Int!,
+    $fillData: JSON = {}
   ) {
-    printTemplateType(id: $id, userId: $userId, fillData: $fillData) {
+    printTemplateType(
+      id: $id,
+      userId: $userId,
+      fillData: $fillData
+    ) {
       token
     }
   }

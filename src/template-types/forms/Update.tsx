@@ -10,13 +10,14 @@ import { Checkbox } from 'baseui/checkbox';
 import { Button } from 'baseui/button';
 import { toaster } from 'baseui/toast';
 
-import { gql, useMutation } from 'urql';
+import { useMutation } from 'urql';
 
 import { useFormik } from 'formik';
 
 import * as gqlSchema from 'src/graphql-schema';
 import { EntityActionForm } from 'src/util/EntityActionForm';
 import { useScreenSize } from 'src/util/Hooks';
+import { UpdateData, UpdateMutation, UpdateVars } from '../data';
 
 
 /**
@@ -28,24 +29,6 @@ import { useScreenSize } from 'src/util/Hooks';
  * has been executed, or whenever a subscription sends a new event. This allows the cache to reactively
  * update itself without queries having to perform a refetch.
  */
-const QUERY = gql`
-  mutation UpdateType(
-    $id: ID!
-    $data: UpdateTemplateTypeInput!
-  ) {
-    updateTemplateType(
-      id: $id
-      data: $data
-    ) {
-      id
-    }
-  }
-`;
-
-interface MutationVars {
-  id: string;
-  data: gqlSchema.UpdateTemplateTypeInput;
-}
 
 interface Props {
   templateType: gqlSchema.TemplateType;
@@ -72,7 +55,7 @@ export function Form({
   const history = useHistory();
   const location = useLocation();
 
-  const [{fetching, data, error, extensions}, mutate] = useMutation<any, MutationVars>(QUERY);
+  const [{fetching, data, error, extensions}, mutate] = useMutation<UpdateData, UpdateVars>(UpdateMutation);
 
   const hasFiles = templateType.pageOfFiles?.total ? true : false;
 

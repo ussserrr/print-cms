@@ -15,7 +15,7 @@ import { useFormik } from 'formik';
 
 import * as gqlSchema from 'src/graphql-schema';
 import { ServiceConfigContext } from 'src/config';
-import { QueryVars } from './List';
+import type { FindVars } from './data';
 
 
 const MARGIN = '1rem';
@@ -31,7 +31,7 @@ const DEFAULT_PAGE_SIZE = 10;
 
 const STORAGE_KEY = 'template-types-list-vars';
 
-function getDefaultVars(pageSize: number = DEFAULT_PAGE_SIZE): QueryVars {
+function getDefaultVars(pageSize: number = DEFAULT_PAGE_SIZE): Required<FindVars> {
   return {
     filter: {
       common: {
@@ -48,12 +48,12 @@ function getDefaultVars(pageSize: number = DEFAULT_PAGE_SIZE): QueryVars {
   };
 }
 
-function retrieveSessionVars(pageSize: number = DEFAULT_PAGE_SIZE): QueryVars {
+function retrieveSessionVars(pageSize: number = DEFAULT_PAGE_SIZE): Required<FindVars> {
   const varsJSON = sessionStorage.getItem(STORAGE_KEY);
-  return varsJSON ? (JSON.parse(varsJSON) as QueryVars) : getDefaultVars(pageSize);
+  return varsJSON ? (JSON.parse(varsJSON) as Required<FindVars>) : getDefaultVars(pageSize);
 }
 
-function saveSessionVars(vars: QueryVars) {
+function saveSessionVars(vars: Required<FindVars>) {
   sessionStorage.setItem(STORAGE_KEY, JSON.stringify(vars));
 }
 
@@ -61,16 +61,19 @@ function clearSessionVars() {
   sessionStorage.removeItem(STORAGE_KEY);
 }
 
-function varsToForm(query: QueryVars, pageSize: number = DEFAULT_PAGE_SIZE): FormData {
+function varsToForm(
+  { filter, options }: Required<FindVars>,
+  pageSize: number = DEFAULT_PAGE_SIZE
+): FormData {
   return {
-    search: query.filter.common?.search ?? '',
-    active: query.filter.active ?? true,
-    owners: query.filter.owners?.length ? query.filter.owners.map(v => ({id: v})) : [],
-    page: ((query.options.page?.offset ?? 0) / (query.options.page?.limit ?? pageSize)) + 1
+    search: filter.common?.search ?? '',
+    active: filter.active ?? true,
+    owners: filter.owners?.length ? filter.owners.map(v => ({id: v})) : [],
+    page: ((options.page?.offset ?? 0) / (options.page?.limit ?? pageSize)) + 1
   };
 }
 
-function formToVars(value: FormData, pageSize: number = DEFAULT_PAGE_SIZE): QueryVars {
+function formToVars(value: FormData, pageSize: number = DEFAULT_PAGE_SIZE): Required<FindVars> {
   return {
     filter: {
       common: {
@@ -98,7 +101,7 @@ type FormData = {
 type Props = {
   pageSize?: number;
   total: number;
-  onFilter: (query: QueryVars) => any;
+  onFilter: (query: Required<FindVars>) => any;
   style?: StyleObject;
 }
 

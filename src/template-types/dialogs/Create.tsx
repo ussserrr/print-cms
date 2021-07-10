@@ -4,37 +4,21 @@ import { FormControl } from 'baseui/form-control';
 import { Select, Value } from 'baseui/select';
 import { Input } from 'baseui/input';
 
-import { gql } from 'urql';
-
 import { useFormik } from 'formik';
 
 import * as gqlSchema from 'src/graphql-schema';
 import { ServiceConfigContext } from 'src/config';
 import { EntityActionDialog, PublicProps } from 'src/util/EntityActionDialog';
+import type { CreateData, CreateVars } from '../data';
+import { CreateMutation } from '../data';
 
-
-interface MutationVars {
-  data: gqlSchema.CreateTemplateTypeInput;
-}
-
-export interface MutationData {
-  createTemplateType: gqlSchema.TemplateType;
-}
-
-const QUERY = gql`
-  mutation CreateType($data: CreateTemplateTypeInput!) {
-    createTemplateType(data: $data) {
-      id
-    }
-  }
-`;
 
 interface FormData {
   owner: Value;
   title: string;
 }
 
-export interface Props extends PublicProps<MutationData> {
+export interface Props extends PublicProps<CreateData> {
   initialValues: FormData;
 }
 
@@ -44,7 +28,7 @@ export function Dialog({
   onCancel,
   initialValues
 }: Props) {
-  const [vars, setVars] = React.useState<MutationVars>();
+  const [vars, setVars] = React.useState<CreateVars>();
 
   const formik = useFormik<FormData>({
     initialValues,
@@ -75,7 +59,7 @@ export function Dialog({
 
 
   return (
-    <EntityActionDialog<MutationVars, MutationData>
+    <EntityActionDialog<CreateVars, CreateData>
       onSubmitted={onSubmitted}
       onCancel={onCancel}
       mode='create'
@@ -143,7 +127,7 @@ export function Dialog({
           </div>
         </>
       }
-      query={QUERY}
+      query={CreateMutation}
       vars={vars}
       onSubmit={() => {
         formik.handleSubmit();

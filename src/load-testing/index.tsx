@@ -27,7 +27,8 @@ import { useQuery } from 'urql';
 
 import { API_URL } from 'src/routes';
 import { useScreenSize } from 'src/util/Hooks';
-import { ListData, ListQueryVars, LIST_QUERY, print, PrintRequest, REQUESTS_TIMER_WINDOW_DEFAULT, TIME_TO_NEXT_REQUEST_RENDER_INTERVAL, USER_ID } from './definitions';
+import { FindData, FindQuery, FindVars } from 'src/template-types/data';
+import { print, PrintRequest, REQUESTS_TIMER_WINDOW_DEFAULT, TIME_TO_NEXT_REQUEST_RENDER_INTERVAL, USER_ID } from './definitions';
 import HelpButton from './HelpButton';
 import ResultsTable from './ResultsTable';
 
@@ -45,8 +46,9 @@ export function LoadTesting() {
   const [requestsHistory, setRequestsHistory] = React.useState<PrintRequest[]>([]);
 
 
-  const [{ data: templatesData, error: templatesError }, getTemplates] = useQuery<ListData, ListQueryVars>({
-    query: LIST_QUERY, variables: { filter: { active: true } },
+  const [{ data: templatesData, error: templatesError }, getTemplates] = useQuery<FindData, FindVars>({
+    query: FindQuery,
+    variables: { filter: { active: true } },
     pause: true,
     requestPolicy: 'network-only'
   });
@@ -57,7 +59,7 @@ export function LoadTesting() {
   }, [templatesError]);
 
 
-  const makeRequest = () => {
+  const makeRequestAndPlanNext = () => {
     if (templates?.length) {
       // Randomly pick a template
       const template = templates[Math.floor(Math.random() * templates.length)];
@@ -92,17 +94,12 @@ export function LoadTesting() {
 
       // Plan the next request
       runRequestsTimer();
-      // const newTimeout = Math.floor(Math.random() * requestsTimerWindow * 1000);
-      // const timer = window.setTimeout(makeRequest, newTimeout);
-      // setTimeToNextRequest(newTimeout);
-      // setRequestsTimerId(timer);
-      // console.log('Requests timer started, id:', timer, 'timeout:', newTimeout);
     }
   }
 
   const runRequestsTimer = () => {
     const newTimeout = Math.floor(Math.random() * requestsTimerWindow * 1000);
-    const timer = window.setTimeout(makeRequest, newTimeout);
+    const timer = window.setTimeout(makeRequestAndPlanNext, newTimeout);
     setTimeToNextRequest(newTimeout);
     setRequestsTimerId(timer);
     console.log('Requests timer started, id:', timer, 'timeout:', newTimeout);
@@ -119,7 +116,7 @@ export function LoadTesting() {
     if (requestsTimerId) {
       stopRequestTimer();
     } else {
-      makeRequest();
+      makeRequestAndPlanNext();
     }
   }
 
@@ -188,10 +185,9 @@ export function LoadTesting() {
         }
       });
     }
-    // return () => {  // TODO: test when implementing correct routing
-    //   console.log('unmount, SSE');
-    //   if (sseInstance) sseInstance.close();
-    // }
+    /**
+     * TODO: Implement correct teardown process (sseInstance.close();)
+     */
   }, [sseInstance, requestsHistory, getTemplates]);
 
   React.useEffect(() => {

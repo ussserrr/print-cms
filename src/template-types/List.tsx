@@ -4,47 +4,14 @@ import { useHistory, useLocation } from 'react-router-dom';
 
 import { toaster } from 'baseui/toast';
 
-import { gql, useQuery } from 'urql';
+import { useQuery } from 'urql';
 
 import * as gqlSchema from 'src/graphql-schema';
 import TablePreHeader from 'src/util/TablePreHeader';
 import { Filter } from './Filter';
 import { Table } from './Table';
-import { Dialog as CreateDialog, Props as CreateDialogProps, MutationData } from './dialogs/Create'
-
-
-interface ListData {
-  templateTypes: gqlSchema.TemplateTypesPageResult;
-}
-
-export interface QueryVars {
-  filter: gqlSchema.TemplateTypesFilter;
-  options: gqlSchema.TemplateTypesRequestOptions;
-}
-
-const QUERY = gql`
-  query FindTemplateTypes(
-    $filter: TemplateTypesFilter = {}
-    $options: TemplateTypesRequestOptions = {}
-  ) {
-    templateTypes(
-      filter: $filter
-      options: $options
-    ) {
-      total
-      items {
-        id
-        owner
-        title
-        active
-        currentFile {
-          id
-          title
-        }
-      }
-    }
-  }
-`;
+import { Dialog as CreateDialog, Props as CreateDialogProps } from './dialogs/Create'
+import { FindData, FindVars, FindQuery, CreateData } from './data';
 
 
 export function List() {
@@ -53,10 +20,10 @@ export function List() {
   const history = useHistory();
   const location = useLocation();
 
-  const [variables, setVariables] = React.useState<QueryVars>();
+  const [variables, setVariables] = React.useState<FindVars>();
 
-  const [{ data, fetching, stale, error }] = useQuery<ListData, QueryVars>({
-    query: QUERY,
+  const [{ data, fetching, stale, error }] = useQuery<FindData, FindVars>({
+    query: FindQuery,
     variables,
     pause: variables === undefined,
 
@@ -82,9 +49,10 @@ export function List() {
         onFilter={setVariables}
       />
 
-      <TablePreHeader<CreateDialogProps, MutationData>
+      <TablePreHeader<CreateDialogProps, CreateData>
         title={'Всего: ' + (data?.templateTypes.total ?? '🤷')}
         onCreated={data =>
+          // TODO: pass data so no need to fetch it in the Card
           history.push(location.pathname + '/' + data.createTemplateType.id, {
             createFile: true
           })

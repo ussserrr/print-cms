@@ -2,30 +2,17 @@ import * as React from 'react';
 
 import _ from 'lodash';
 
-import { gql } from 'urql';
-
 import * as gqlSchema from 'src/graphql-schema';
 import { EntityActionDialog, PublicProps } from 'src/util/EntityActionDialog';
+import { RemoveMutation, RemoveVars } from '../data';
 
 
 interface Props extends PublicProps<any> {
   templateType: gqlSchema.TemplateType;
 }
 
-interface RemoveMutationVars {
-  id: string;
-}
-
-const REMOVE_TYPE = gql`
-  mutation RemoveType($id: ID!) {
-    removeTemplateType(id: $id) {
-      id
-    }
-  }
-`;
-
 export function Dialog(props: Props) {
-  const [vars, setVars] = React.useState<RemoveMutationVars>();
+  const [vars, setVars] = React.useState<RemoveVars>();
 
   let title = `шаблон "${props.templateType.title}"`;
   if (props.templateType.pageOfFiles?.total) {
@@ -33,12 +20,12 @@ export function Dialog(props: Props) {
   }
 
   return (
-    <EntityActionDialog<RemoveMutationVars>
+    <EntityActionDialog<RemoveVars>
       onSubmitted={props.onSubmitted}
       onCancel={props.onCancel}
       mode='remove'
       what={title}
-      query={REMOVE_TYPE}
+      query={RemoveMutation}
       vars={vars}
       onSubmit={() => {
         setVars(_.cloneDeep(props.templateType));

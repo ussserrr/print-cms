@@ -5,47 +5,23 @@ import _ from 'lodash';
 import { FormControl } from 'baseui/form-control';
 import { Input } from 'baseui/input';
 
-import { gql } from 'urql';
-
 import { useFormik } from 'formik';
 
 import * as gqlSchema from 'src/graphql-schema';
 import { EntityActionDialog, PublicProps } from 'src/util/EntityActionDialog';
+import { UpdateMutation, UpdateVars } from '../data';
 
 
 interface Props extends PublicProps {
   templateFile: gqlSchema.TemplateFile;
 }
 
-interface MutationVars {
-  id: string;
-  data: gqlSchema.UpdateTemplateFileInput;
-}
-
-const QUERY = gql`
-  mutation UpdateFile(
-    $id: ID!
-    $data: UpdateTemplateFileInput!
-  ) {
-    updateTemplateFile(
-      id: $id
-      data: $data
-    ) {
-      id
-      title
-      mimeType
-      isCurrentFileOfItsType
-      updatedAt
-    }
-  }
-`;
-
 export function Dialog({
   onSubmitted,
   onCancel,
   templateFile
 }: Props) {
-  const [vars, setVars] = React.useState<MutationVars>();
+  const [vars, setVars] = React.useState<UpdateVars>();
 
   const formik = useFormik<gqlSchema.TemplateFile>({
     initialValues: templateFile,
@@ -57,7 +33,7 @@ export function Dialog({
   });
 
   return (
-    <EntityActionDialog<MutationVars>
+    <EntityActionDialog<UpdateVars>
       onSubmitted={onSubmitted}
       onCancel={args => {
         onCancel(args);
@@ -78,7 +54,7 @@ export function Dialog({
           </FormControl>
         </>
       }
-      query={QUERY}
+      query={UpdateMutation}
       vars={vars}
       onSubmit={formik.handleSubmit}
     />

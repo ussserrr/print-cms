@@ -7,7 +7,7 @@ import { useHistory, useLocation, useParams } from 'react-router-dom';
 import { useStyletron } from 'baseui';
 import { Button } from 'baseui/button';
 
-import { gql, useQuery } from 'urql';
+import { useQuery } from 'urql';
 
 import * as gqlSchema from 'src/graphql-schema';
 import { useScreenSize } from 'src/util/Hooks';
@@ -18,41 +18,12 @@ import * as CreateFile from 'src/template-files/dialogs/Create';
 import { Table as FilesTable } from 'src/template-files/Table';
 import * as Update from './forms/Update';
 import * as Remove from './dialogs/Remove';
+import { GetData, GetQuery, GetVars } from './data';
 
 
 const STYLE = {
   flex: '1 0 auto'
 };
-
-
-interface TemplateTypeData {
-  templateType: gqlSchema.TemplateType;
-}
-
-interface QueryVars {
-  id: string;
-}
-
-const TEMPLATE_TYPE = gql`
-  query GetTemplateTypeById($id: ID!) {
-    templateType(id: $id) {
-      id
-      owner
-      title
-      active
-      pageOfFiles {
-        total
-        items {
-          id
-          title
-          mimeType
-          isCurrentFileOfItsType
-          updatedAt
-        }
-      }
-    }
-  }
-`;
 
 
 export function Card() {
@@ -73,8 +44,8 @@ export function Card() {
   const [removeDialogIsOpen, setRemoveDialogIsOpen] = React.useState(false);
   const [someFileRemovalDialogIsOpen, setSomeFileRemovalDialogIsOpen] = React.useState(false);
 
-  const [{ data, fetching, error, stale }] = useQuery<TemplateTypeData, QueryVars>({
-    query: TEMPLATE_TYPE,
+  const [{ data, fetching, error, stale }] = useQuery<GetData, GetVars>({
+    query: GetQuery,
     variables: { id },
     pause: removeDialogIsOpen || someFileRemovalDialogIsOpen
   });

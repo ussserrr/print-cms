@@ -19,7 +19,7 @@ import { List as TemplateTypesList } from './template-types/List';
 import { Card as TemplateTypeCard } from './template-types/Card';
 import Config from './config/index';  // TODO: conflicting modules names
 import { LoadTesting } from './load-testing';
-import { getTemplateTypeById, QUERY, QueryVars, TemplateTypeData } from './queries';
+import { GetData, GetQuery, getTemplateTypeById, GetVars } from './template-types/data';
 
 
 export const API_URL = process.env.REACT_APP_API_URL ?? '/api';
@@ -122,8 +122,8 @@ function NotFound() {
 }
 
 function TemplateTypeBreadcrumb({ match }: { match: match<{ id: string }> }) {
-  const [{ data, error }] = useQuery<TemplateTypeData, QueryVars>({
-    query: QUERY,
+  const [{ data, error }] = useQuery<GetData, GetVars>({
+    query: GetQuery,
     variables: match.params
   });
 

@@ -10,23 +10,18 @@ import { Input } from 'baseui/input';
 import { Checkbox } from 'baseui/checkbox';
 import { FileUploader } from 'baseui/file-uploader';
 
-import { gql } from 'urql';
-
 import { useFormik } from 'formik';
 
 import * as gqlSchema from 'src/graphql-schema';
 import { EntityActionDialog, PublicProps } from 'src/util/EntityActionDialog';
 import { ServiceConfigContext } from 'src/config';
+import { CreateMutation, CreateVars } from '../data';
 
 
 export interface Props extends PublicProps {
   forTemplateType: gqlSchema.TemplateType;
 }
 
-interface MutationVars {
-  file: File;
-  data: gqlSchema.CreateTemplateFileInput;
-}
 
 type FormData = {
   file?: File
@@ -37,31 +32,11 @@ type FormData = {
  * These queries/mutations are not properly typed! Seems like we can type the function call
  * (i.e. tell the TS about expected types) but the actual string still will not be checked
  */
-const QUERY = gql`
-  mutation CreateFile(
-    $file: Upload!
-    $data: CreateTemplateFileInput!
-  ) {
-    createTemplateFile(
-      file: $file
-      data: $data
-    ) {
-      id
-      title
-      mimeType
-      templateType {
-        id  # return this to notify cache manager about a new entity
-      }
-      isCurrentFileOfItsType
-      updatedAt
-    }
-  }
-`;
 
 export function Dialog(props: Props) {
   const [, theme] = useStyletron();
 
-  const [vars, setVars] = React.useState<MutationVars>();
+  const [vars, setVars] = React.useState<CreateVars>();
 
   const formik = useFormik<FormData>({
     initialValues: {
@@ -105,7 +80,7 @@ export function Dialog(props: Props) {
 
 
   return (
-    <EntityActionDialog<MutationVars>
+    <EntityActionDialog<CreateVars>
       onSubmitted={props.onSubmitted}
       onCancel={args => {
         props.onCancel(args);
@@ -197,7 +172,7 @@ export function Dialog(props: Props) {
           }
         </>
       }
-      query={QUERY}
+      query={CreateMutation}
       vars={vars}
       onSubmit={formik.handleSubmit}
     />
