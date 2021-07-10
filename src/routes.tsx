@@ -4,10 +4,14 @@
  *  - Document title management by https://github.com/lynoapp/react-router-title
  */
 
-import { Switch, Route } from 'react-router-dom';
+import React from 'react';
+
+import { Switch, Route, match } from 'react-router-dom';
 import { RouterTitleProps } from 'react-router-title';
 
 import _ from 'lodash';
+
+import { useQuery } from 'urql';
 
 import { H5, Display2, Paragraph2 } from 'baseui/typography';
 
@@ -15,7 +19,7 @@ import { List as TemplateTypesList } from './template-types/List';
 import { Card as TemplateTypeCard } from './template-types/Card';
 import Config from './config/index';  // TODO: conflicting modules names
 import { LoadTesting } from './load-testing';
-import { getTemplateTypeById } from './queries';
+import { getTemplateTypeById, QUERY, QueryVars, TemplateTypeData } from './queries';
 
 
 export const API_URL = process.env.REACT_APP_API_URL ?? '/api';
@@ -23,7 +27,7 @@ export const API_URL = process.env.REACT_APP_API_URL ?? '/api';
 
 type RouteNode = {
   title: string;
-  breadcrumb?: string;
+  breadcrumb?: string | React.ComponentType<{ match: match<{ id: string }> }>;
   path: string;
   exact?: boolean;
   component?: React.ComponentType<any>;
@@ -74,8 +78,8 @@ function _RouteChildren({ routes }: RouteNode) {
 
 
 export const routerTitleCallback: RouterTitleProps['callback'] = async ({
-  title,   // Final title string which was generated
-  params,  // Params from the last sub-route which has params
+  title,  // Final title string which was generated
+  params  // Params from the last sub-route which has params
 }) => {
   /**
    * TODO: This find/replace routine is not generic - we use here the fact
@@ -117,6 +121,23 @@ function NotFound() {
   );
 }
 
+function TemplateTypeBreadcrumb({ match }: { match: match<{ id: string }> }) {
+  const [{ data, error }] = useQuery<TemplateTypeData, QueryVars>({
+    query: QUERY,
+    variables: match.params
+  });
+
+  React.useEffect(() => {
+    if (error) console.error(error);
+  }, [error]);
+
+  return (
+    data?.templateType
+    ? <>{data.templateType.title}</>
+    : <>Шаблон</>
+  );
+}
+
 
 export const ROUTES: RouteNode[] = [
   {
@@ -141,7 +162,7 @@ export const ROUTES: RouteNode[] = [
       },
       {
         title: '<Шаблон>',
-        breadcrumb: 'Шаблон',
+        breadcrumb: TemplateTypeBreadcrumb,
         path: '/types/:id',
         exact: true,
         component: TemplateTypeCard

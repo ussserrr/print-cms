@@ -5,15 +5,15 @@ import * as gqlSchema from 'src/graphql-schema';
 import { gqlClient } from 'src/App';
 
 
-interface TemplateTypeData {
+export interface TemplateTypeData {
   templateType: gqlSchema.TemplateType;
 }
 
-interface QueryVars {
+export interface QueryVars {
   id: string;
 }
 
-const QUERY = gql`
+export const QUERY = gql`
   query GetTemplateTypeById($id: ID!) {
     templateType(id: $id) {
       id
