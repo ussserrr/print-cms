@@ -25,6 +25,7 @@ export function Toggler({ style }: { style?: StyleObject }) {
 
   return (
     <StatefulTooltip
+      // Or we can just use title='Тема оформления' on div below to provide native tooltip
       accessibilityType='tooltip'
       content='Тема оформления'
     >

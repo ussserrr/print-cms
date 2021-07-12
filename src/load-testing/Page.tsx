@@ -112,12 +112,12 @@ export function LoadTesting() {
     const timer = window.setTimeout(makeRequestAndPlanNext, newTimeout);
     setTimeToNextRequest(newTimeout);
     setRequestsTimerId(timer);
-    console.log('Requests timer started, id:', timer, 'timeout:', newTimeout);
+    // console.log('Requests timer started, id:', timer, 'timeout:', newTimeout);
   }
 
   const stopRequestTimer = React.useCallback(() => {
     window.clearTimeout(requestsTimerId);
-    console.log('Requests timer cleared, id:', requestsTimerId);
+    // console.log('Requests timer cleared, id:', requestsTimerId);
     setTimeToNextRequest(undefined);
     setRequestsTimerId(undefined);
   }, [requestsTimerId]);

@@ -22,3 +22,5 @@ spec:
         env:
           - name: NODE_ENV
             value: production
+          - name: REACT_APP_API_URL
+            value: /api

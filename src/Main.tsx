@@ -77,7 +77,7 @@ export const Main = withRouter(() => {
         } : {})
       })}>
         <div className={css({  // TODO: do we really need to use css() function instead of just "style" prop in such cases?
-          padding: '30px 5%',
+          padding: '30px 5%',  // TODO: use "eslint-plugin-baseui"
           display: 'flex',
           flexDirection: 'column',
           ...((size > 640) ? {
