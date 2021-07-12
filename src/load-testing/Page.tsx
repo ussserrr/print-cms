@@ -249,9 +249,10 @@ export function LoadTesting() {
   return (
     <div className={css({                       // Container
       ...((screenSize > 640) ? {
+        height: '85vh',  // hacky
         display: 'flex',
         flexDirection: 'column',
-        height: '85vh'  // hacky
+        paddingBlockEnd: '30px'
       } : {})
     })}>
       <div className={css({                     // Header (controls, some stats)

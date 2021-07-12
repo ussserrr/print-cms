@@ -1,10 +1,8 @@
 import React from 'react';
 
 import { toaster } from 'baseui/toast';
-import type { OptionsT } from 'baseui/select';
 
-import { Duration } from 'luxon';
-import type { DurationObject } from 'luxon';
+import type { Duration, DurationObject } from 'luxon';
 
 import { API_URL } from 'src/util/constants';
 
@@ -20,7 +18,10 @@ type ServiceConfig =
         timeoutMs: number;
         removeAfter: Duration | number | DurationObject;  // luxon format
       };
-      owners: OptionsT[];
+      owners: {
+        id: string;
+        label: string;
+      }[];
     }
   | { loading: true }
   | { error: Error };

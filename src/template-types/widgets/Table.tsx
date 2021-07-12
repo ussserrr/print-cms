@@ -1,9 +1,12 @@
+import React from 'react';
+
 import { TableBuilder, TableBuilderColumn } from 'baseui/table-semantic';
 import { StyledLink } from 'baseui/link';
 
 import { CombinedError } from 'urql';
 
 import * as gqlSchema from 'src/graphql-schema';
+import { ServiceConfigContext } from 'src/service-config/data';
 import Loader from 'src/util/widgets/Loader';
 import ErrorsList from 'src/util/widgets/ErrorsList';
 
@@ -24,6 +27,9 @@ type Props = {
 }
 
 export function Table({ data, isLoading, error, onItemSelect }: Props) {
+  const serviceConfig = React.useContext(ServiceConfigContext);
+  const owners = 'owners' in serviceConfig ? serviceConfig.owners : [];
+
   return (
     <TableBuilder
       data={data ?? []}
@@ -36,7 +42,7 @@ export function Table({ data, isLoading, error, onItemSelect }: Props) {
       loadingMessage={<Loader />}
     >
       <TableBuilderColumn header='Владелец' children={(row: gqlSchema.TemplateType) =>
-        muteOnNonActive(row, row.owner)
+        muteOnNonActive(row, owners.find(o => o.id === row.owner)?.label ?? row.owner)
       }/>
 
       <TableBuilderColumn header='Название' children={(row: gqlSchema.TemplateType) =>
