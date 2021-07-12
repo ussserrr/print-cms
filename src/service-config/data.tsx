@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 
 import { toaster } from 'baseui/toast';
 import type { OptionsT } from 'baseui/select';

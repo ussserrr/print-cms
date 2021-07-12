@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 
 import { useStyletron } from 'styletron-react';
 import { Button, SHAPE, SIZE } from 'baseui/button';

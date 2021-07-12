@@ -8,7 +8,7 @@
  * visuals (text box/notification bubble).
  */
 
-import * as React from 'react';
+import React from 'react';
 
 import type { StyleObject } from 'styletron-react';
 import { useStyletron } from 'baseui';

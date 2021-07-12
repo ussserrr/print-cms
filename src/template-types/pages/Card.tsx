@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 
 import type { RouteComponentProps } from 'react-router-dom';
 import { useParams } from 'react-router-dom';

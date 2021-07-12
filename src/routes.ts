@@ -1,14 +1,14 @@
-import { RouteChildren, RouteNode } from './util/routing';
+import { RouteChildren, RouteNode } from 'src/util/routing';
 
-import { API_URL } from './util/constants';
+import { API_URL } from 'src/util/constants';
 
-import HomePage from './home/Page';
-import NotFound from './util/widgets/NotFound';
-import { List as TemplateTypesList } from './template-types/pages/List';
-import { Card as TemplateTypeCard } from './template-types/pages/Card';
-import TemplateTypeBreadcrumb from './template-types/widgets/Breadcrumb';
-import ServiceConfig from './service-config/Page';
-import { LoadTesting } from './load-testing/Page';
+import HomePage from 'src/home/Page';
+import NotFound from 'src/util/widgets/NotFound';
+import { List as TemplateTypesList } from 'src/template-types/pages/List';
+import { Card as TemplateTypeCard } from 'src/template-types/pages/Card';
+import TemplateTypeBreadcrumb from 'src/template-types/widgets/Breadcrumb';
+import ServiceConfig from 'src/service-config/Page';
+import { LoadTesting } from 'src/load-testing/Page';
 
 
 const ROUTES: RouteNode[] = [

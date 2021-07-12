@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 
 import type { StyleObject } from 'styletron-standard';
 import { useStyletron } from 'baseui';

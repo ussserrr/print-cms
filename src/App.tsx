@@ -20,7 +20,7 @@ import { ServiceConfigProvider } from 'src/service-config/data';
 import { Main } from 'src/Main';
 
 
-const styletronDebug = process.env.NODE_ENV === 'production' ? void 0 : new DebugEngine();  // TODO
+const styletronDebug = process.env.NODE_ENV === 'production' ? void 0 : new DebugEngine();
 const engine = new StyletronClient();
 
 export const gqlClient = createClient({

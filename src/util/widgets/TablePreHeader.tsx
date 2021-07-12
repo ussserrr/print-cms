@@ -4,7 +4,7 @@
  * Shows some title and small button to add a new element, reducing the burden on parent.
  */
 
-import * as React from 'react';
+import React from 'react';
 
 import { useStyletron } from 'baseui';
 import { LabelLarge } from 'baseui/typography';

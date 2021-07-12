@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 
 import * as gqlSchema from 'src/graphql-schema';
 import { EntityActionDialog, PublicProps } from 'src/util/widgets/EntityActionDialog';

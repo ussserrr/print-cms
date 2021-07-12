@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 
 import { TableBuilder, TableBuilderColumn } from 'baseui/table-semantic';
 import { Checkbox } from 'baseui/checkbox';

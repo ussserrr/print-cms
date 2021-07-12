@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 
 import type { ButtonOverrides } from 'baseui/button';
 import { Button, KIND } from 'baseui/button';

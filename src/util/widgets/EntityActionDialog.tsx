@@ -14,7 +14,7 @@
  * validate a form and set GraphQL vars to start the mutation.
  */
 
-import * as React from 'react';
+import React from 'react';
 
 import type { StyleObject } from 'styletron-react';
 import { useStyletron } from 'baseui';
