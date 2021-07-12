@@ -121,7 +121,6 @@ export function EntityActionDialog<MutationVars = any, ResultData = any>({
       role={role}
       onClose={onCancel}
       isOpen={isOpen}
-      unstable_ModalBackdropScroll={true}  // TODO
     >
       <ModalHeader>{title}</ModalHeader>
 

@@ -32,7 +32,6 @@ export default function HelpButton({ overrides }: { overrides?: ButtonOverrides 
               setIsDialogOpen(false);
               setTimeout(setIsDialogRendered, MODAL_CLOSE_TIMEOUT, false);
             }}
-            unstable_ModalBackdropScroll={true}  // TODO
           >
             <ModalHeader>Нагрузочное тестирование</ModalHeader>
             <ModalBody>

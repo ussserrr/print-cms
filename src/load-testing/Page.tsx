@@ -63,7 +63,9 @@ export function LoadTesting() {
   const templates = templatesData?.templateTypes.items;
 
   React.useEffect(() => {
-    if (templatesError) toaster.negative('Ошибка запроса печатных шаблонов: ' + templatesError.message, {});
+    if (templatesError) {
+      toaster.negative('Ошибка запроса печатных шаблонов: ' + templatesError.message, {});
+    }
   }, [templatesError]);
 
 
@@ -146,7 +148,7 @@ export function LoadTesting() {
    */
   React.useEffect(() => {
     if (!sseInstance) {
-      // console.log('Setup SSE...');  // TODO
+      // console.log('Setup SSE...');
       const sse = new EventSource(API_URL + '/print/sse?userId=' + USER_ID.toString());
       setSseInstance(sse);
       sse.addEventListener('open', () => {
@@ -185,7 +187,10 @@ export function LoadTesting() {
                 message: data
               });
             } else {
-              console.error('Cannot found any request in history associated with the incoming SSE event', event);
+              console.error(
+                'Cannot found any request in history associated with the incoming SSE event',
+                event
+              );
             }
             // Return the same array, just updating the reference link (so React can react)
             return Array.from(history);

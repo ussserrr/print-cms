@@ -58,7 +58,6 @@ function MobileMenu({ history }: { history: History }) {
                 }
               }
             }}
-            unstable_ModalBackdropScroll={true}  // TODO
           >
             <ModalHeader>Меню</ModalHeader>
             <ModalBody>

@@ -66,8 +66,7 @@ function RemoveButton({ templateFile, setRemovalDialogIsOpen }: Props) {
       {
         dialogIsOpen
         ? <Remove.Dialog
-            // onSubmitted={() => {}}
-            onSubmitted={() => {  // TODO
+            onSubmitted={() => {
               setDialogIsOpen(false);
               setRemovalDialogIsOpen(false);
             }}

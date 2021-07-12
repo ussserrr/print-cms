@@ -1,6 +1,6 @@
 import type { StyleObject } from 'styletron-react';
 import { useStyletron } from 'baseui';
-import { StyledSpinnerNext } from 'baseui/spinner';  // TODO
+import { Spinner } from 'baseui/spinner';
 import { LabelMedium } from 'baseui/typography';
 
 
@@ -19,7 +19,7 @@ export default function Loader({ style }: { style?: StyleObject }) {
         alignItems: 'center',
         justifyContent: 'center'
       })}>
-        <StyledSpinnerNext />
+        <Spinner />
         <LabelMedium className={css({ marginBlockStart: '0.5rem' })}>
           Загрузка...
         </LabelMedium>
