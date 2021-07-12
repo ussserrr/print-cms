@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import { TableBuilder, TableBuilderColumn } from 'baseui/table-semantic';
 import { StyledLink } from 'baseui/link';
 
@@ -11,7 +9,7 @@ import ErrorsList from 'src/util/widgets/ErrorsList';
 
 
 function muteOnNonActive(
-  item: {active: boolean},
+  item: { active: boolean },
   text?: string
 ) {
   return item.active ? text : <span style={{color: 'GrayText'}}>{text}</span>;
@@ -29,13 +27,13 @@ export function Table({ data, isLoading, error, onItemSelect }: Props) {
   return (
     <TableBuilder
       data={data ?? []}
-      isLoading={isLoading ?? false}
+      isLoading={isLoading}
       emptyMessage={
         error
         ? <ErrorsList error={error} />
         : 'Шаблоны не найдены'
       }
-      loadingMessage={<Loader/>}
+      loadingMessage={<Loader />}
     >
       <TableBuilderColumn header='Владелец' children={(row: gqlSchema.TemplateType) =>
         muteOnNonActive(row, row.owner)

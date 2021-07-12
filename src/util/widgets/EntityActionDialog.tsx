@@ -1,15 +1,31 @@
+/**
+ * Generic dialog for some data model instance creating/updating/removing.
+ *
+ * It wraps generic EntityActionForm into Base Web Modal component. It manages its own
+ * open/close state so corresponding animations has a chance to complete. However, if
+ * the executed mutation will violate internal urql cache some component up in the DOM
+ * tree can be removed/rerendered before the animation stops.
+ *
+ * When "subclassing" this dialog, it is often convenient to extend only PublicProps
+ * and pass all other props as predefined values (we probably know what exactly we're
+ * create/update/remove).
+ *
+ * When "Submit" button is pressed, onSubmit callback is calling so the parent can
+ * validate a form and set GraphQL vars to start the mutation.
+ */
+
 import * as React from 'react';
 
-import _ from 'lodash';
-
-import { StyleObject } from 'styletron-react';
+import type { StyleObject } from 'styletron-react';
 import { useStyletron } from 'baseui';
 import { Modal, ModalHeader, ModalBody, ModalFooter, ModalButton, CLOSE_SOURCE, ROLE } from 'baseui/modal';
 import { KIND } from 'baseui/button';
 
 import { useMutation } from 'urql';
 
-import { MODAL_CLOSE_TIMEOUT_MS } from '../constants';
+import _ from 'lodash';
+
+import { MODAL_CLOSE_TIMEOUT } from '../constants';
 import { EntityActionForm } from './EntityActionForm';
 
 
@@ -45,36 +61,27 @@ export function EntityActionDialog<MutationVars = any, ResultData = any>({
 }: Props<MutationVars, ResultData>) {
   const [, theme] = useStyletron();
 
-  let action: string;
+  let action = 'Выполнить действие';
   switch (mode) {
-    case 'create':
-      action = 'Добавить';
-      break;
-    case 'update':
-      action = 'Изменить';
-      break;
-    case 'remove':
-      action = 'Удалить';
-      break;
-    default:
-      action = 'Выполнить действие';
-      break;
+    case 'create': action = 'Добавить'; break;
+    case 'update': action = 'Изменить'; break;
+    case 'remove': action = 'Удалить'; break;
   }
 
   let _title = action;
   if (what?.length) {
     _title += ` ${what}`;
   }
-  const [title] = React.useState(_title);
+  const [title] = React.useState(_title);  // "freeze" an initial calculated value
 
-  let role;
+  let role;  // not sure what it gives...
   if (mode === 'remove') {
     role = ROLE.alertdialog;
   } else {
     role = ROLE.dialog;
   }
 
-  let submitButtonOverrides = _.set({}, 'BaseButton.props.type', 'submit');
+  const submitButtonOverrides = _.set({}, 'BaseButton.props.type', 'submit');
   switch (mode) {
     case 'create':
       _.set(submitButtonOverrides, 'BaseButton.style.backgroundColor', theme.colors.contentPositive);
@@ -90,23 +97,21 @@ export function EntityActionDialog<MutationVars = any, ResultData = any>({
   const [isOpen, setIsOpen] = React.useState(true);
   const onCancel: CancelHandler = (args) => {
     setIsOpen(false);
-    setTimeout(() => onCancelPassed(args), MODAL_CLOSE_TIMEOUT_MS);
+    setTimeout(() => onCancelPassed(args), MODAL_CLOSE_TIMEOUT);
   }
 
   const [{fetching, data, error, extensions}, mutate] = useMutation<ResultData, MutationVars>(query);
 
-  React.useEffect(() => {
+  React.useEffect(() => {  // execute the mutation when a parent sets variables
     if (vars) {
-      mutate(
-        vars  // comment this to quickly test an error appearance :)
-      );
+      mutate(vars);  // remove "vars" to quickly test an error appearance :)
     }
   }, [vars, mutate]);
 
-  React.useEffect(() => {
+  React.useEffect(() => {  // close on success i.e. when some data is returned from the mutation
     if (data) {
       setIsOpen(false);
-      setTimeout(() => onSubmitted(data), MODAL_CLOSE_TIMEOUT_MS);
+      setTimeout(() => onSubmitted(data), MODAL_CLOSE_TIMEOUT);
     }
   }, [data, onSubmitted]);
 

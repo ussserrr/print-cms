@@ -3,14 +3,15 @@ import * as React from 'react';
 import { DateTime } from 'luxon';
 
 import { TableBuilder, TableBuilderColumn } from 'baseui/table-semantic';
-import { Theme } from 'baseui/theme';
+import type { Theme } from 'baseui/theme';
 import { StyledLink } from 'baseui/link';
 import { StatefulPopover } from 'baseui/popover';
 import { Paragraph2 } from 'baseui/typography';
 
-import { API_URL } from 'src/routes';
+import { API_URL } from 'src/util/constants';
 import { useScreenSize } from 'src/util/hooks';
-import { PrintRequest } from '../data';
+
+import type { PrintRequest } from '../data';
 
 
 type Props = {
@@ -77,10 +78,22 @@ export default function ResultsTable({ requestsHistory, requestsTimerId }: Props
             );
           } else if (row.state === 'DONE' && row.message.error) {
             return (
-              <StatefulPopover showArrow content={
-                <Paragraph2 padding='scale700' margin='0' color='negative' >{row.message.error}</Paragraph2>
-              } >
-                <StyledLink onClick={e => e.preventDefault()} tabIndex={0}>
+              <StatefulPopover
+                showArrow
+                content={
+                  <Paragraph2
+                    padding='scale700'
+                    margin='0'
+                    color='negative'
+                  >
+                    {row.message.error}
+                  </Paragraph2>
+                }
+              >
+                <StyledLink
+                  onClick={event => event.preventDefault()}
+                  tabIndex={0}
+                >
                   {row.template.title}
                 </StyledLink>
               </StatefulPopover>

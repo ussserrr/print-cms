@@ -1,10 +1,11 @@
 import * as React from 'react';
 
-import { Button, ButtonOverrides, KIND } from 'baseui/button';
+import type { ButtonOverrides } from 'baseui/button';
+import { Button, KIND } from 'baseui/button';
 import { Modal, ModalHeader, ModalBody } from 'baseui/modal';
 import { Paragraph2 } from 'baseui/typography';
 
-import { MODAL_CLOSE_TIMEOUT_MS } from 'src/util/constants';
+import { MODAL_CLOSE_TIMEOUT } from 'src/util/constants';
 
 
 export default function HelpButton({ overrides }: { overrides?: ButtonOverrides }) {
@@ -29,7 +30,7 @@ export default function HelpButton({ overrides }: { overrides?: ButtonOverrides 
             isOpen={isDialogOpen}
             onClose={() => {
               setIsDialogOpen(false);
-              setTimeout(setIsDialogRendered, MODAL_CLOSE_TIMEOUT_MS, false);
+              setTimeout(setIsDialogRendered, MODAL_CLOSE_TIMEOUT, false);
             }}
             unstable_ModalBackdropScroll={true}  // TODO
           >

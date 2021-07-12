@@ -1,11 +1,22 @@
+/**
+ * HTML form HOC to use for create/update/remove actions on some data models.
+ *
+ * The form content iteslf is supplied by the caller so it can implement any
+ * validation strategy as it wants.
+ *
+ * Component will react on data/error/extensions events and show appropriate
+ * visuals (text box/notification bubble).
+ */
+
 import * as React from 'react';
 
-import { StyleObject } from 'styletron-react';
+import type { StyleObject } from 'styletron-react';
 import { useStyletron } from 'baseui';
 import { toaster } from 'baseui/toast';
 
 import { CombinedError } from 'urql';
 
+import { TOAST_AUTO_HIDE_DURATION } from 'src/util/constants';
 import ErrorsList from './ErrorsList';
 
 
@@ -32,13 +43,14 @@ export function EntityActionForm<ResultData = any>({
   const [css] = useStyletron();
 
   [actionTitle] = React.useState(actionTitle);
-  React.useEffect(() => {
+
+  React.useEffect(() => {  // show the notification on success
     if (data) {
       toaster.positive(`Успешно: ${actionTitle}`, {});
     }
   }, [data, actionTitle]);
 
-  React.useEffect(() => {
+  React.useEffect(() => {  // show any passed extensions (typically warnings)
     if (extensions?.warnings?.length) {
       toaster.warning(
         <div>
@@ -47,12 +59,12 @@ export function EntityActionForm<ResultData = any>({
             <p key={idx}>{warning}</p>
           )}
         </div>,
-        { autoHideDuration: 10000 }
+        { autoHideDuration: 2 * TOAST_AUTO_HIDE_DURATION }  // double down the default
       );
     }
   }, [extensions]);
 
-  React.useEffect(() => {
+  React.useEffect(() => {  // show the notification on error
     if (error) {
       toaster.negative(`Ошибка: ${actionTitle}`, {});
     }

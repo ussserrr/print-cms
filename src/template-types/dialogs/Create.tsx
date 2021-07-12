@@ -1,14 +1,17 @@
 import * as React from 'react';
 
 import { FormControl } from 'baseui/form-control';
-import { Select, Value } from 'baseui/select';
+import { Select } from 'baseui/select';
+import type { Value } from 'baseui/select';
 import { Input } from 'baseui/input';
 
 import { useFormik } from 'formik';
 
 import * as gqlSchema from 'src/graphql-schema';
-import { ServiceConfigContext } from 'src/config/data';
-import { EntityActionDialog, PublicProps } from 'src/util/widgets/EntityActionDialog';
+import { ServiceConfigContext } from 'src/service-config/data';
+import { EntityActionDialog } from 'src/util/widgets/EntityActionDialog';
+import type { PublicProps } from 'src/util/widgets/EntityActionDialog';
+
 import type { CreateData, CreateVars } from '../data';
 import { CreateMutation } from '../data';
 
@@ -44,14 +47,12 @@ export function Dialog({
 
       return errors;
     },
-    onSubmit: values => {
-      setVars({
-        data: {
-          owner: values.owner[0].id as gqlSchema.Owner,
-          title: values.title
-        }
-      });
-    }
+    onSubmit: values => setVars({
+      data: {
+        owner: values.owner[0].id as gqlSchema.Owner,
+        title: values.title
+      }
+    })
   });
 
   const serviceConfig = React.useContext(ServiceConfigContext);
@@ -73,9 +74,17 @@ export function Dialog({
           <div>
             <FormControl
               label='Владелец*'
-              caption={'loading' in serviceConfig ? 'Загрузка возможных владельцев...' : 'Для кого или чего предназначается шаблон'}
-              error={'error' in serviceConfig ? 'Ошибка получения от сервиса возможных владельцев' : formik.errors.owner}
               disabled={owners === undefined}
+              caption={
+                'loading' in serviceConfig
+                ? 'Загрузка возможных владельцев...'
+                : 'Для кого или чего предназначается шаблон'
+              }
+              error={
+                'error' in serviceConfig
+                ? 'Ошибка получения от сервиса возможных владельцев'
+                : formik.errors.owner
+              }
             >
               <Select
                 options={owners}
@@ -129,9 +138,7 @@ export function Dialog({
       }
       query={CreateMutation}
       vars={vars}
-      onSubmit={() => {
-        formik.handleSubmit();
-      }}
+      onSubmit={formik.handleSubmit}
     />
   );
 }

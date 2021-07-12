@@ -1,24 +1,18 @@
 import * as React from 'react';
 
 import type { RouteComponentProps } from 'react-router-dom';
-
 import type { History } from 'history';
 
-import { StyleObject } from 'styletron-standard';
+import type { StyleObject } from 'styletron-standard';
 import { Navigation } from 'baseui/side-navigation';
-import {
-  HeaderNavigation,
-  ALIGN,
-  StyledNavigationList,
-  StyledNavigationItem
-} from 'baseui/header-navigation';
+import { HeaderNavigation, ALIGN, StyledNavigationList, StyledNavigationItem } from 'baseui/header-navigation';
 import { Button } from 'baseui/button';
 import { Modal, ModalBody, ModalHeader } from 'baseui/modal';
 import { StatefulMenu } from 'baseui/menu';
 
-import { ROUTES } from 'src/routes';
+import { EXTERNAL_LINK_SYMBOL, MODAL_CLOSE_TIMEOUT } from 'src/util/constants';
+import ROUTES from 'src/routes';
 import { useScreenSize } from 'src/util/hooks';
-import { EXTERNAL_LINK_SYMBOL, MODAL_CLOSE_TIMEOUT_MS } from 'src/util/constants';
 
 
 const SIDEBAR_ROUTES = ROUTES.slice(0, ROUTES.length - 1);  // exclude NotFound page
@@ -33,7 +27,7 @@ function MobileMenu({ history }: { history: History }) {
     if (immediate) {
       setIsRendered(false);
     } else {
-      setTimeout(setIsRendered, MODAL_CLOSE_TIMEOUT_MS, false);
+      setTimeout(setIsRendered, MODAL_CLOSE_TIMEOUT, false);
     }
   }
 

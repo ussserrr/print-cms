@@ -1,35 +1,39 @@
 import * as React from 'react';
 
-import _ from 'lodash';
-
 import * as gqlSchema from 'src/graphql-schema';
 import { EntityActionDialog, PublicProps } from 'src/util/widgets/EntityActionDialog';
-import { RemoveMutation, RemoveVars } from '../data';
+
+import _ from 'lodash';
+
+import type { RemoveVars } from '../data';
+import { RemoveMutation } from '../data';
 
 
 interface Props extends PublicProps {
   templateFile: gqlSchema.TemplateFile;
 }
 
-export function Dialog(props: Props) {
+export function Dialog({
+  onSubmitted,
+  onCancel,
+  templateFile
+}: Props) {
   const [vars, setVars] = React.useState<RemoveVars>();
 
   return (
     <EntityActionDialog<RemoveVars>
-      onSubmitted={props.onSubmitted}
-      onCancel={props.onCancel}
+      onSubmitted={onSubmitted}
+      onCancel={onCancel}
       mode='remove'
-      what={`файл "${props.templateFile.title}"`}
+      what={`файл "${templateFile.title}"`}
       formContent={
-        props.templateFile.isCurrentFileOfItsType
+        templateFile.isCurrentFileOfItsType
         ? 'Внимание, файл является текущим для данного шаблона'
         : undefined
       }
       query={RemoveMutation}
       vars={vars}
-      onSubmit={() => {
-        setVars(_.cloneDeep(props.templateFile));
-      }}
+      onSubmit={() => setVars(_.cloneDeep(templateFile))}
     />
   );
 }

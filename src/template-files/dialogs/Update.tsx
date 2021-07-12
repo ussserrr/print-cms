@@ -1,15 +1,17 @@
 import * as React from 'react';
 
-import _ from 'lodash';
-
 import { FormControl } from 'baseui/form-control';
 import { Input } from 'baseui/input';
 
 import { useFormik } from 'formik';
 
+import _ from 'lodash';
+
 import * as gqlSchema from 'src/graphql-schema';
 import { EntityActionDialog, PublicProps } from 'src/util/widgets/EntityActionDialog';
-import { UpdateMutation, UpdateVars } from '../data';
+
+import type { UpdateVars } from '../data';
+import { UpdateMutation } from '../data';
 
 
 interface Props extends PublicProps {
@@ -35,9 +37,7 @@ export function Dialog({
   return (
     <EntityActionDialog<UpdateVars>
       onSubmitted={onSubmitted}
-      onCancel={args => {
-        onCancel(args);
-      }}
+      onCancel={onCancel}
       mode='update'
       what={`файл "${templateFile.title}"`}
       formContent={

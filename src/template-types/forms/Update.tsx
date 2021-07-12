@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { useHistory, useLocation } from 'react-router-dom';
 
-import { StyleObject } from 'styletron-standard';
+import type { StyleObject } from 'styletron-standard';
 import { useStyletron } from 'baseui';
 import { FormControl } from 'baseui/form-control';
 import { Input } from 'baseui/input';
@@ -10,25 +10,17 @@ import { Checkbox } from 'baseui/checkbox';
 import { Button } from 'baseui/button';
 import { toaster } from 'baseui/toast';
 
-import { useMutation } from 'urql';
-
 import { useFormik } from 'formik';
+
+import { useMutation } from 'urql';
 
 import * as gqlSchema from 'src/graphql-schema';
 import { EntityActionForm } from 'src/util/widgets/EntityActionForm';
 import { useScreenSize } from 'src/util/hooks';
-import { UpdateData, UpdateMutation, UpdateVars } from '../data';
 
+import type { UpdateData, UpdateVars } from '../data';
+import { UpdateMutation } from '../data';
 
-/**
- * To update the cache after mutation one need to switch from the default caching mechanism
- * (Document caching) to Normalized cache. See https://formidable.com/open-source/urql/docs/graphcache/
- * for more information. It states:
- *
- * You can implement update functions that tell Graphcache how to update its data after a mutation
- * has been executed, or whenever a subscription sends a new event. This allows the cache to reactively
- * update itself without queries having to perform a refetch.
- */
 
 interface Props {
   templateType: gqlSchema.TemplateType;
@@ -77,6 +69,15 @@ export function Form({
       return errors;
     },
     onSubmit: async values => {
+      /**
+       * To update the cache after mutation one need to switch from the default caching mechanism
+       * (Document caching) to Normalized cache. See
+       * https://formidable.com/open-source/urql/docs/graphcache/ for more information. Quote:
+       *
+       *   You can implement update functions that tell Graphcache how to update its data after a
+       *   mutation has been executed, or whenever a subscription sends a new event. This allows
+       *   the cache to reactively update itself without queries having to perform a refetch.
+       */
       await mutate({
         id: templateType.id,
         data: {
@@ -89,6 +90,9 @@ export function Form({
     }
   });
 
+  /**
+   * Dedicated logic to validate a type activeness and show guiding messages
+   */
   React.useEffect(() => {
     if (hasFiles) {
       if (currentFileIdTouched) {
@@ -130,6 +134,7 @@ export function Form({
       }
     }
   }, [activeShouldRecalculate, activeValue]);
+
 
   React.useEffect(() => {
     if (shouldActivate) {
@@ -192,8 +197,8 @@ export function Form({
               <Checkbox
                 name='active'
                 checked={activeValue}
-                onChange={e => {
-                  setActiveValue(e.currentTarget.checked);
+                onChange={event => {
+                  setActiveValue(event.currentTarget.checked);
                   setActiveShouldRecalculate(true);
                 }}
               >

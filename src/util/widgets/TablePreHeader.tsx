@@ -1,13 +1,17 @@
-import * as React from 'react';
+/**
+ * Convenient generic header for list data models.
+ *
+ * Shows some title and small button to add a new element, reducing the burden on parent.
+ */
 
-// import { useLocation } from 'react-router-dom';
+import * as React from 'react';
 
 import { useStyletron } from 'baseui';
 import { LabelLarge } from 'baseui/typography';
 import { Button, SHAPE, SIZE } from 'baseui/button';
 import { Plus } from 'baseui/icon';
 
-import { PublicProps as EntityDialogPublicProps } from './EntityActionDialog';
+import type { PublicProps as EntityDialogPublicProps } from './EntityActionDialog';
 
 
 type PredefinedProps<ResultData> = EntityDialogPublicProps<ResultData> & { mode: 'create' };
@@ -34,15 +38,15 @@ export default function TablePreHeader<
 {
   const [css] = useStyletron();
 
-  const [isOpen, setIsOpen] = React.useState(dialogIsOpenInitially);
+  const [dialogIsOpen, setDialogIsOpen] = React.useState(dialogIsOpenInitially);
 
   const addingSpecificProps: PredefinedProps<ResultData> = {
     mode: 'create',
     onSubmitted: (data: ResultData) => {
-      setIsOpen(false);
+      setDialogIsOpen(false);
       if (onCreated) onCreated(data);
     },
-    onCancel: () => setIsOpen(false)
+    onCancel: () => setDialogIsOpen(false)
   };
 
   return (
@@ -53,21 +57,24 @@ export default function TablePreHeader<
       marginBottom: '0.5rem'
     })}>
       <LabelLarge>{title}</LabelLarge>
-      <React.Fragment>
-        <Button shape={SHAPE.circle} size={SIZE.mini}
-          onClick={() => setIsOpen(true)}
+
+      <>
+        <Button
+          shape={SHAPE.circle}
+          size={SIZE.mini}
+          onClick={() => setDialogIsOpen(true)}
         >
           <Plus size={20} title='Добавить' />
         </Button>
         {
-          isOpen
+          dialogIsOpen
           ? <Dialog
               {...addingSpecificProps}
               {...otherProps as CreateDialogProps}  // https://stackoverflow.com/a/60735856/7782943
             />
           : null
         }
-      </React.Fragment>
+      </>
     </div>
   );
 }

@@ -1,12 +1,14 @@
 import * as React from 'react';
 
-import * as _ from 'lodash';
+import _ from 'lodash';
 
 import { Notification } from 'baseui/notification';
-import { TreeView, TreeNode, toggleIsExpanded } from 'baseui/tree-view';
-
-import { ServiceConfigContext, serviceConfigDescription } from 'src/config/data';
+import type { TreeNode } from 'baseui/tree-view'
+// StatefulTreeView doesn't work, strangely (no reaction to clicks)...
+import { TreeView, toggleIsExpanded } from 'baseui/tree-view';
 import { Paragraph2 } from 'baseui/typography';
+
+import { ServiceConfigContext, serviceConfigDescription } from './data';
 
 
 function convert(obj: Record<string, any>, idPrefix?: string): TreeNode[] {
@@ -68,7 +70,8 @@ export default function ServiceConfiguration() {
 
   return (
     <>
-      <Notification closeable
+      <Notification
+        closeable
         overrides={{
           Body: {
             style: {
@@ -77,22 +80,16 @@ export default function ServiceConfiguration() {
               marginBlockEnd: '2rem'
             }
           },
-          CloseIcon: {
-            props: {
-              title: 'Закрыть'
-            }
-          }
+          CloseIcon: { props: { title: 'Закрыть' } }
         }}
       >
         ℹ️ Публичные настройки сервиса, предоставляемые клиентам.
         Сюда не входят внутренние детали реализации
       </Notification>
+
       <TreeView
         data={data}
-        onToggle={node =>
-          // StatefulTreeView doesn't work, strangely (no reaction to clicks)...
-          setData(prevData => toggleIsExpanded(prevData, node))
-        }
+        onToggle={node => setData(prevData => toggleIsExpanded(prevData, node))}
       />
     </>
   );

@@ -1,11 +1,12 @@
 import * as React from 'react';
 
 import { toaster } from 'baseui/toast';
-import { OptionsT } from 'baseui/select';
+import type { OptionsT } from 'baseui/select';
 
-import { Duration, DurationObject } from 'luxon';
+import { Duration } from 'luxon';
+import type { DurationObject } from 'luxon';
 
-import { API_URL } from 'src/routes';
+import { API_URL } from 'src/util/constants';
 
 
 type ServiceConfig =
@@ -34,6 +35,7 @@ export const serviceConfigDescription = {
   },
   owners: 'Допустимые владельцы'
 } as const;
+
 
 export const ServiceConfigContext = React.createContext<ServiceConfig>({ loading: true });
 ServiceConfigContext.displayName = 'ServiceConfigContext';

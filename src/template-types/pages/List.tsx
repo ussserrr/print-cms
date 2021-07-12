@@ -7,16 +7,19 @@ import { toaster } from 'baseui/toast';
 import { useQuery } from 'urql';
 
 import TablePreHeader from 'src/util/widgets/TablePreHeader';
+
 import { Filter } from '../widgets/Filter';
 import { Table } from '../widgets/Table';
-import { Dialog as CreateDialog, Props as CreateDialogProps } from '../dialogs/Create'
-import { FindData, FindVars, FindQuery, CreateData } from '../data';
+import { Dialog as CreateDialog } from '../dialogs/Create'
+import type { Props as CreateDialogProps } from '../dialogs/Create'
+import type { FindData, FindVars, CreateData } from '../data';
+import { FindQuery } from '../data';
 
 
 export function List({ history, location }: RouteComponentProps) {
   const [variables, setVariables] = React.useState<FindVars>();
 
-  const [{ data, fetching, stale, error }] = useQuery<FindData, FindVars>({
+  const [{ data, fetching, error }] = useQuery<FindData, FindVars>({
     query: FindQuery,
     variables,
     pause: variables === undefined,
@@ -27,7 +30,7 @@ export function List({ history, location }: RouteComponentProps) {
      * whether invalidate the cache when joining this scope or switch to more sophisticated
      * cache type (Normalized)
      */
-    requestPolicy: 'cache-and-network'
+    requestPolicy: 'network-only'
   });
 
   React.useEffect(() => {
@@ -62,7 +65,7 @@ export function List({ history, location }: RouteComponentProps) {
 
       <Table
         data={data?.templateTypes.items}
-        isLoading={fetching || stale}
+        isLoading={fetching}
         error={error}
         onItemSelect={item => history.push(location.pathname + '/' + item.id)}
       />

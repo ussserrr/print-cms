@@ -1,26 +1,24 @@
 import * as React from 'react';
 
-import _ from 'lodash';
-
 import { useStyletron } from 'baseui';
-import { toaster } from 'baseui/toast';
-import { Label3 } from 'baseui/typography';
 import { FormControl } from 'baseui/form-control';
 import { Input } from 'baseui/input';
 import { Checkbox } from 'baseui/checkbox';
 import { FileUploader } from 'baseui/file-uploader';
+import { Label3 } from 'baseui/typography';
+import { toaster } from 'baseui/toast';
 
 import { useFormik } from 'formik';
 
+import _ from 'lodash';
+
 import * as gqlSchema from 'src/graphql-schema';
-import { EntityActionDialog, PublicProps } from 'src/util/widgets/EntityActionDialog';
-import { ServiceConfigContext } from 'src/config/data';
-import { CreateMutation, CreateVars } from '../data';
+import { EntityActionDialog } from 'src/util/widgets/EntityActionDialog';
+import type { PublicProps } from 'src/util/widgets/EntityActionDialog';
+import { ServiceConfigContext } from 'src/service-config/data';
 
-
-export interface Props extends PublicProps {
-  forTemplateType: gqlSchema.TemplateType;
-}
+import type { CreateVars } from '../data';
+import { CreateMutation } from '../data';
 
 
 type FormData = {
@@ -28,7 +26,15 @@ type FormData = {
 } & gqlSchema.CreateTemplateFileInput;
 
 
-export function Dialog(props: Props) {
+export interface Props extends PublicProps {
+  forTemplateType: gqlSchema.TemplateType;
+}
+
+export function Dialog({
+  onSubmitted,
+  onCancel,
+  forTemplateType
+}: Props) {
   const [, theme] = useStyletron();
 
   const [vars, setVars] = React.useState<CreateVars>();
@@ -36,7 +42,7 @@ export function Dialog(props: Props) {
   const formik = useFormik<FormData>({
     initialValues: {
       file: undefined,
-      templateTypeId: props.forTemplateType.id,
+      templateTypeId: forTemplateType.id,
       title: '',
       isCurrentFileOfItsType: true
     },
@@ -56,7 +62,9 @@ export function Dialog(props: Props) {
     })
   });
 
-  const currentFile = props.forTemplateType.pageOfFiles?.items.find(file => file.isCurrentFileOfItsType);
+  const currentFile = forTemplateType.pageOfFiles?.items.find(
+    file => file.isCurrentFileOfItsType
+  );
 
   const serviceConfig = React.useContext(ServiceConfigContext);
   let allowedExtensions = '', allowedMimeTypes = '';
@@ -76,12 +84,10 @@ export function Dialog(props: Props) {
 
   return (
     <EntityActionDialog<CreateVars>
-      onSubmitted={props.onSubmitted}
-      onCancel={args => {
-        props.onCancel(args);
-      }}
+      onSubmitted={onSubmitted}
+      onCancel={onCancel}
       mode='create'
-      what={`файл для шаблона "${props.forTemplateType.title}"`}
+      what={`файл для шаблона "${forTemplateType.title}"`}
       formStyle={{
         display: 'grid',
         gap: '0.5rem'
@@ -159,9 +165,11 @@ export function Dialog(props: Props) {
           </div>
 
           {
-            'filesToKeep' in serviceConfig && props.forTemplateType.pageOfFiles?.total === serviceConfig.filesToKeep
+            'filesToKeep' in serviceConfig &&
+            forTemplateType.pageOfFiles?.total === serviceConfig.filesToKeep
               ? <Label3 color={theme.colors.warning}>
-                  У данного шаблона уже прикреплено максимальное количество файлов. Следующий файл заменит собой самый ранний из них
+                  У данного шаблона уже прикреплено максимальное количество файлов.
+                  Следующий файл заменит собой самый ранний из них
                 </Label3>
               : null
           }

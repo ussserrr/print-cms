@@ -1,16 +1,16 @@
 import * as React from 'react';
 
-import _ from 'lodash';
-
-import { DateTime } from 'luxon';
-
 import { TableBuilder, TableBuilderColumn } from 'baseui/table-semantic';
 import { Checkbox } from 'baseui/checkbox';
 
 import { CombinedError } from 'urql';
 
+import { DateTime } from 'luxon';
+
+import _ from 'lodash';
+
 import * as gqlSchema from 'src/graphql-schema';
-import { ServiceConfigContext } from 'src/config/data';
+import { ServiceConfigContext } from 'src/service-config/data';
 import Loader from 'src/util/widgets/Loader';
 import { Actions } from './Actions';
 
@@ -19,7 +19,7 @@ type Props = {
   data: gqlSchema.TemplateFile[];
   isLoading?: boolean;
   error?: CombinedError;
-  setSomeFileRemovalDialogIsOpen?: React.Dispatch<React.SetStateAction<boolean>>;
+  setSomeFileRemoveDialogIsOpen?: React.Dispatch<React.SetStateAction<boolean>>;
   onCurrentFileChanged?: (id?: string) => void;
 }
 
@@ -27,7 +27,7 @@ export function Table({
   data,
   isLoading,
   error,
-  setSomeFileRemovalDialogIsOpen,
+  setSomeFileRemoveDialogIsOpen,
   onCurrentFileChanged
 }: Props) {
   const serviceConfig = React.useContext(ServiceConfigContext);
@@ -40,21 +40,21 @@ export function Table({
     filesToKeep = serviceConfig.filesToKeep.toString();
   }
 
-  const [removalDialogsOpenState, setRemovalDialogOpenState] = React.useState<boolean[]>([]);
+  const [removeDialogsOpenState, setRemoveDialogsOpenState] = React.useState<boolean[]>([]);
   React.useEffect(() => {
-    if (setSomeFileRemovalDialogIsOpen) {
-      setSomeFileRemovalDialogIsOpen(removalDialogsOpenState.some(v => v));
+    if (setSomeFileRemoveDialogIsOpen) {
+      setSomeFileRemoveDialogIsOpen(removeDialogsOpenState.some(v => v));
     }
-  }, [setSomeFileRemovalDialogIsOpen, removalDialogsOpenState]);
+  }, [setSomeFileRemoveDialogIsOpen, removeDialogsOpenState]);
 
 
   return (
     <TableBuilder
       data={data}
-      isLoading={isLoading ?? false}
+      isLoading={isLoading}
       emptyMessage={
         error
-        ? <span style={{color: 'red'}}>{error.message}</span>
+        ? <span style={{color: 'negative'}}>{error.message}</span>
         : <span style={{color: 'GrayText'}}>
             У данного шаблона нет файлов. Добавьте один с помощью кнопки выше.
             Пустые шаблоны по-умолчанию неактивны и не показываются в выдаче на печать.
@@ -89,9 +89,9 @@ export function Table({
           <Actions
             templateFile={row}
             setRemovalDialogIsOpen={flag => {
-              const newVal = _.clone(removalDialogsOpenState);
+              const newVal = _.clone(removeDialogsOpenState);
               if (rowIndex !== undefined) newVal[rowIndex] = flag;
-              setRemovalDialogOpenState(newVal);
+              setRemoveDialogsOpenState(newVal);
             }}
           />
         }

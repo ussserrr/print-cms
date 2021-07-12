@@ -1,6 +1,6 @@
-import * as React from 'react';
-
 import { useStyletron } from 'baseui';
+
+import _ from 'lodash';
 
 import { CombinedError } from '@urql/core';
 
@@ -8,16 +8,12 @@ import { CombinedError } from '@urql/core';
 export default function ErrorsList({ error }: { error: CombinedError }) {
   const [css, theme] = useStyletron();
 
-  let errorMessages: string[] = [];
-  if (error) {
-    errorMessages = errorMessages
-      .concat(
-        error.networkError?.message ? [error.networkError?.message] : [],
-        error.graphQLErrors
-          .filter(e => e.extensions?.exception?.response?.message || e.message)
-          .map(e => e.extensions?.exception?.response?.message || e.message)
-      )
-  }
+  const errorMessages = _.concat([],
+    error.networkError?.message ? error.networkError?.message : [],
+    error.graphQLErrors
+      .filter(e => e.extensions?.exception?.response?.message || e.message)
+      .map(e => e.extensions?.exception?.response?.message || e.message)
+  );
 
   return (
     <div className={css({ color: theme.colors.contentNegative })}>

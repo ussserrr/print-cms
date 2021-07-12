@@ -3,8 +3,9 @@ import * as React from 'react';
 import { useStyletron } from 'styletron-react';
 import { Button, SHAPE, SIZE } from 'baseui/button';
 
-import { API_URL } from 'src/routes';
+import { API_URL } from 'src/util/constants';
 import * as gqlSchema from 'src/graphql-schema';
+
 import * as Update from '../dialogs/Update';
 import * as Remove from '../dialogs/Remove';
 
@@ -19,24 +20,27 @@ function UpdateButton({ templateFile }: Props) {
   const [dialogIsOpen, setDialogIsOpen] = React.useState(false);
 
   return (
-    <React.Fragment>
-      <Button shape={SHAPE.square} size={SIZE.mini}
-        overrides={{ Root: { style: { fontWeight: 'bold', fontSize: '16pt' } } }}
+    <>
+      <Button
+        shape={SHAPE.square}
+        size={SIZE.mini}
+        overrides={{ Root: { style: {
+          fontWeight: 'bold',
+          fontSize: '16pt'
+        } } }}
         children={<span title='Редактировать'>✎</span>}
         onClick={() => setDialogIsOpen(true)}
       />
       {
         dialogIsOpen
         ? <Update.Dialog
-            onSubmitted={() => {
-              setDialogIsOpen(false);
-            }}
+            onSubmitted={() => setDialogIsOpen(false)}
             onCancel={() => setDialogIsOpen(false)}
             templateFile={templateFile}
           />
         : null
       }
-    </React.Fragment>
+    </>
   );
 }
 
@@ -45,9 +49,14 @@ function RemoveButton({ templateFile, setRemovalDialogIsOpen }: Props) {
   const [dialogIsOpen, setDialogIsOpen] = React.useState(false);
 
   return (
-    <React.Fragment>
-      <Button shape={SHAPE.square} size={SIZE.mini}
-        overrides={{ Root: { style: { fontWeight: 'bold', fontSize: '20pt' } } }}
+    <>
+      <Button
+        shape={SHAPE.square}
+        size={SIZE.mini}
+        overrides={{ Root: { style: {
+          fontWeight: 'bold',
+          fontSize: '20pt'
+        } } }}
         children={<span title='Удалить'>×</span>}
         onClick={() => {
           setDialogIsOpen(true);
@@ -57,11 +66,10 @@ function RemoveButton({ templateFile, setRemovalDialogIsOpen }: Props) {
       {
         dialogIsOpen
         ? <Remove.Dialog
-            onSubmitted={() => {
-              // try {  // this item, as we execute the removal operation, can be not existing at this point
-                setDialogIsOpen(false);
-                setRemovalDialogIsOpen(false);
-              // } catch {};
+            // onSubmitted={() => {}}
+            onSubmitted={() => {  // TODO
+              setDialogIsOpen(false);
+              setRemovalDialogIsOpen(false);
             }}
             onCancel={() => {
               setDialogIsOpen(false);
@@ -71,17 +79,23 @@ function RemoveButton({ templateFile, setRemovalDialogIsOpen }: Props) {
           />
         : null
       }
-    </React.Fragment>
+    </>
   );
 }
 
 
 function DownloadButton({ templateFile }: Props) {
   return (
-    <Button shape={SHAPE.square} size={SIZE.mini}
-      overrides={{ Root: { style: { fontWeight: 'bold', fontSize: '16pt' } } }}
+    <Button
+      shape={SHAPE.square}
+      size={SIZE.mini}
+      overrides={{ Root: { style: {
+        fontWeight: 'bold',
+        fontSize: '16pt'
+      } } }}
       children={<span title='Скачать'>⤓</span>}
-      $as='a' href={API_URL + '/print/raw/' + templateFile.id}
+      $as='a'
+      href={API_URL + '/print/raw/' + templateFile.id}
     />
   );
 }

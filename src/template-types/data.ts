@@ -140,7 +140,7 @@ export const RemoveMutation = gql`
 export async function getTemplateTypeById(id: string): Promise<gqlSchema.TemplateType | undefined> {
   /**
    * This will return a cached value, if present.
-   * Use wonka's API - .toPromise() version doesn't work (prevents other requests to execute)
+   * Use wonka's API: .toPromise() version doesn't work (prevents other requests to execute)
    */
   return new Promise<gqlSchema.TemplateType | undefined>(resolve => pipe(
     gqlClient.query<GetData, GetVars>(

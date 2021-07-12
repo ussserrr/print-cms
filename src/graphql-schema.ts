@@ -1,3 +1,6 @@
+/**
+ * GraphQL schema imported from the print-service
+ */
 
 /*
  * ------------------------------------------------------

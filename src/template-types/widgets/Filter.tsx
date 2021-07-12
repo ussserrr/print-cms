@@ -1,11 +1,11 @@
 import * as React from 'react';
 
-import { StyleObject } from 'styletron-standard';
+import type { StyleObject } from 'styletron-standard';
 import { useStyletron } from 'baseui';
 import { Search, Delete, Alert } from 'baseui/icon';
 import { Input } from 'baseui/input';
 import { Checkbox, LABEL_PLACEMENT } from 'baseui/checkbox';
-import { Select, Value } from 'baseui/select';
+import { Select } from 'baseui/select';
 import { Pagination } from 'baseui/pagination';
 import { Button, KIND as ButtonKind, SHAPE } from 'baseui/button';
 import { StatefulTooltip } from 'baseui/tooltip';
@@ -13,9 +13,11 @@ import { Notification, KIND as NotificationKind } from 'baseui/notification';
 
 import { useFormik } from 'formik';
 
-import * as gqlSchema from 'src/graphql-schema';
-import { ServiceConfigContext } from 'src/config/data';
-import type { FindVars } from '../data';
+import { ServiceConfigContext } from 'src/service-config/data';
+
+import type { FindVars, FormData } from './filter-helpers';
+import { DEFAULT_PAGE_SIZE, clearSessionVars, formToVars, getDefaultVars,
+  retrieveSessionVars, saveSessionVars, varsToForm } from './filter-helpers';
 
 
 const MARGIN = '1rem';
@@ -27,86 +29,21 @@ const INPUT_STYLE = {
   margin: ITEM_MARGIN
 };
 
-const DEFAULT_PAGE_SIZE = 10;
-
-const STORAGE_KEY = 'template-types-list-vars';
-
-function getDefaultVars(pageSize: number = DEFAULT_PAGE_SIZE): Required<FindVars> {
-  return {
-    filter: {
-      common: {
-        search: undefined
-      },
-      active: true
-    },
-    options: {
-      page: {
-        limit: pageSize,
-        offset: 0
-      }
-    }
-  };
-}
-
-function retrieveSessionVars(pageSize: number = DEFAULT_PAGE_SIZE): Required<FindVars> {
-  const varsJSON = sessionStorage.getItem(STORAGE_KEY);
-  return varsJSON ? (JSON.parse(varsJSON) as Required<FindVars>) : getDefaultVars(pageSize);
-}
-
-function saveSessionVars(vars: Required<FindVars>) {
-  sessionStorage.setItem(STORAGE_KEY, JSON.stringify(vars));
-}
-
-function clearSessionVars() {
-  sessionStorage.removeItem(STORAGE_KEY);
-}
-
-function varsToForm(
-  { filter, options }: Required<FindVars>,
-  pageSize: number = DEFAULT_PAGE_SIZE
-): FormData {
-  return {
-    search: filter.common?.search ?? '',
-    active: filter.active ?? true,
-    owners: filter.owners?.length ? filter.owners.map(v => ({id: v})) : [],
-    page: ((options.page?.offset ?? 0) / (options.page?.limit ?? pageSize)) + 1
-  };
-}
-
-function formToVars(value: FormData, pageSize: number = DEFAULT_PAGE_SIZE): Required<FindVars> {
-  return {
-    filter: {
-      common: {
-        search: value.search ? value.search : undefined
-      },
-      active: value.active,
-      owners: value.owners?.length ? value.owners.map(v => v.id as gqlSchema.Owner) : undefined
-    },
-    options: {
-      page: {
-        limit: pageSize,
-        offset: ((value.page ?? 1) - 1) * pageSize
-      }
-    }
-  };
-}
-
-type FormData = {
-  search?: string;
-  active?: boolean;
-  owners?: Value;
-  page?: number;
-}
 
 type Props = {
   pageSize?: number;
   total: number;
-  onFilter: (query: Required<FindVars>) => any;
+  onFilter: (query: FindVars) => any;
   style?: StyleObject;
 }
 
 
-export function Filter({ pageSize=DEFAULT_PAGE_SIZE, total, onFilter, style}: Props) {
+export function Filter({
+  pageSize = DEFAULT_PAGE_SIZE,
+  total,
+  onFilter,
+  style
+}: Props) {
   const [css, theme] = useStyletron();
 
   const totalPages = Math.ceil(total / pageSize);
@@ -160,19 +97,9 @@ export function Filter({ pageSize=DEFAULT_PAGE_SIZE, total, onFilter, style}: Pr
         }
       }}
       overrides={{
-        Root: {
-          style: INPUT_STYLE
-        },
-        SelectArrow: {
-          props: {
-            title: 'Открыть'
-          }
-        },
-        ClearIcon: {
-          props: {
-            title: 'Очистить'
-          }
-        }
+        Root: { style: INPUT_STYLE },
+        SelectArrow: { props: { title: 'Открыть' } },
+        ClearIcon: { props: { title: 'Очистить' } }
       }}
     />;
 
@@ -193,10 +120,10 @@ export function Filter({ pageSize=DEFAULT_PAGE_SIZE, total, onFilter, style}: Pr
         placeholder='От 3-х знаков...'
         value={formik.values.search}
         onChange={formik.handleChange}
-        onBlur={e => formik.setFieldTouched('search', true)}
+        onBlur={() => formik.setFieldTouched('search', true)}
         error={formik.touched.search && Boolean(formik.errors.search)}
         endEnhancer={
-          (formik.touched.search && Boolean(formik.errors.search))
+          formik.touched.search && Boolean(formik.errors.search)
           ? <div
               className={css({
                 display: 'flex',
@@ -211,14 +138,8 @@ export function Filter({ pageSize=DEFAULT_PAGE_SIZE, total, onFilter, style}: Pr
         clearable={true}
         clearOnEscape={false}
         overrides={{
-          Root: {
-            style: INPUT_STYLE
-          },
-          ClearIcon: {
-            props: {
-              title: 'Очистить'
-            }
-          }
+          Root: { style: INPUT_STYLE },
+          ClearIcon: { props: { title: 'Очистить' } }
         }}
       />
 
@@ -248,13 +169,7 @@ export function Filter({ pageSize=DEFAULT_PAGE_SIZE, total, onFilter, style}: Pr
         checked={formik.values.active}
         onChange={formik.handleChange}
         labelPlacement={LABEL_PLACEMENT.right}
-        overrides={{
-          Root: {
-            style: {
-              margin: ITEM_MARGIN
-            }
-          }
-        }}
+        overrides={{ Root: { style: { margin: ITEM_MARGIN } } }}
       >
         Активные
       </Checkbox>
@@ -263,8 +178,11 @@ export function Filter({ pageSize=DEFAULT_PAGE_SIZE, total, onFilter, style}: Pr
         display: 'flex',
         margin: `0 auto ${MARGIN} 0`
       })}>
-        <Button type='submit' shape={SHAPE.square} kind={ButtonKind.secondary}
-          onClick={e => formik.setFieldValue('page', 1)}  // reset the page before submit
+        <Button
+          type='submit'
+          shape={SHAPE.square}
+          kind={ButtonKind.secondary}
+          onClick={() => formik.setFieldValue('page', 1)}  // reset the page before submit
           overrides={{ Root: { style: { marginRight: '0.25rem' } }}}
         >
           <Search size={20} title='Искать' />
@@ -283,38 +201,16 @@ export function Filter({ pageSize=DEFAULT_PAGE_SIZE, total, onFilter, style}: Pr
           formik.handleSubmit();
         }}
         overrides={{
-          Root: {
-            style: {
-              marginBottom: MARGIN
-            }
-          },
-          Select: {
-            props: {
-              overrides: {
-                SelectArrow: {
-                  props: {
-                    title: 'Открыть'
-                  }
-                }
-              }
-            }
-          },
+          Root: { style: { marginBottom: MARGIN } },
+          Select: { props: { overrides: { SelectArrow: { props: { title: 'Открыть'  } } } } },
           PrevButton: {
-            style: {
-              height: theme.sizing.scale1200  // 48px as for all other elements
-            },
-            props: {
-              type: 'button'  // for formik
-            }
+            style: { height: theme.sizing.scale1200 },  // 48px as for all other elements
+            props: { type: 'button' }  // for formik
           },
           NextButton: {
-            style: {
-              height: theme.sizing.scale1200  // 48px as for all other elements
-            },
-            props: {
-              type: 'button'  // for formik
-            }
-          },
+            style: { height: theme.sizing.scale1200 },  // 48px as for all other elements
+            props: { type: 'button' }  // for formik
+          }
         }}
       />
     </form>

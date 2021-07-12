@@ -1,24 +1,28 @@
 import * as React from 'react';
 
-import _ from 'lodash';
-
-import { RouteComponentProps, useParams } from 'react-router-dom';
+import type { RouteComponentProps } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 import { useStyletron } from 'baseui';
 import { Button } from 'baseui/button';
 
 import { useQuery } from 'urql';
 
+import _ from 'lodash';
+
 import * as gqlSchema from 'src/graphql-schema';
 import { useScreenSize } from 'src/util/hooks';
 import TablePreHeader from 'src/util/widgets/TablePreHeader';
 import Loader from 'src/util/widgets/Loader';
 import ErrorsList from 'src/util/widgets/ErrorsList';
-import * as CreateFile from 'src/template-files/dialogs/Create';
+
+import * as CreateFileDialog from 'src/template-files/dialogs/Create';
 import { Table as FilesTable } from 'src/template-files/widgets/Table';
+
 import * as Update from '../forms/Update';
 import * as Remove from '../dialogs/Remove';
-import { GetData, GetQuery, GetVars } from '../data';
+import type { GetData, GetVars } from '../data';
+import { GetQuery } from '../data';
 
 
 const STYLE = {
@@ -27,7 +31,7 @@ const STYLE = {
 
 
 export function Card({ history, location }: RouteComponentProps) {
-  const { id } = useParams<{id: string}>();
+  const params = useParams<{id: string}>();
 
   const [css] = useStyletron();
   const size = useScreenSize();
@@ -39,18 +43,19 @@ export function Card({ history, location }: RouteComponentProps) {
   const shouldCreateFileOnOpen = (location.state as any)?.createFile ? true : false;
   const [firstFileCreated, setFirstFileCreated] = React.useState<boolean>(false);
   const [removeDialogIsOpen, setRemoveDialogIsOpen] = React.useState(false);
-  const [someFileRemovalDialogIsOpen, setSomeFileRemovalDialogIsOpen] = React.useState(false);
+  const [someFileRemoveDialogIsOpen, setSomeFileRemoveDialogIsOpen] = React.useState(false);
 
   const [{ data, fetching, error, stale }] = useQuery<GetData, GetVars>({
     query: GetQuery,
-    variables: { id },
-    pause: removeDialogIsOpen || someFileRemovalDialogIsOpen
+    variables: params,
+    pause: removeDialogIsOpen || someFileRemoveDialogIsOpen
   });
 
   React.useEffect(() => {
-    setFiles(data?.templateType?.pageOfFiles?.items ?? []);
+    const files = data?.templateType?.pageOfFiles?.items;
+    setFiles(files ?? []);
     setCurrentFileIdTouched(false);
-    setCurrentFileId(data?.templateType?.pageOfFiles?.items?.find(file => file.isCurrentFileOfItsType)?.id);
+    setCurrentFileId(files?.find(file => file.isCurrentFileOfItsType)?.id);
   }, [data]);
 
 
@@ -126,7 +131,8 @@ export function Card({ history, location }: RouteComponentProps) {
               ? <Remove.Dialog
                   onSubmitted={() => {
                     setRemoveDialogIsOpen(false);
-                    history.push(location.pathname.substring(0, location.pathname.lastIndexOf('/')));
+                    const path = location.pathname;
+                    history.push(path.substring(0, path.lastIndexOf('/')));
                   }}
                   onCancel={() => setRemoveDialogIsOpen(false)}
                   templateType={data.templateType}
@@ -135,20 +141,22 @@ export function Card({ history, location }: RouteComponentProps) {
             }
           </div>
 
-          <TablePreHeader<CreateFile.Props>
+          <TablePreHeader<CreateFileDialog.Props>
             title='Файлы'
             dialogIsOpenInitially={shouldCreateFileOnOpen}
             onCreated={() => setFirstFileCreated(true)}
-            createDialog={CreateFile.Dialog}
+            createDialog={CreateFileDialog.Dialog}
             createDialogProps={{ forTemplateType: data.templateType }}
           />
 
           <FilesTable
             data={files}
-            setSomeFileRemovalDialogIsOpen={setSomeFileRemovalDialogIsOpen}
+            setSomeFileRemoveDialogIsOpen={setSomeFileRemoveDialogIsOpen}
             onCurrentFileChanged={newCurrentFileId => {
               const newValue = _.cloneDeep(files);
-              newValue.forEach(file => file.isCurrentFileOfItsType = (file.id === newCurrentFileId));
+              newValue.forEach(file =>
+                file.isCurrentFileOfItsType = (file.id === newCurrentFileId)
+              );
               setFiles(newValue);
               setCurrentFileId(newCurrentFileId);
               setCurrentFileIdTouched(true);

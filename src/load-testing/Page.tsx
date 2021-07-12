@@ -25,9 +25,11 @@ import { StatefulTooltip } from 'baseui/tooltip';
 
 import { useQuery } from 'urql';
 
-import { API_URL } from 'src/routes';
+import { API_URL } from 'src/util/constants';
 import { useScreenSize } from 'src/util/hooks';
-import { FindData, FindQuery, FindVars } from 'src/template-types/data';
+import type { FindData, FindVars } from 'src/template-types/data';
+import { FindQuery } from 'src/template-types/data';
+
 import { print } from './data';
 import type { PrintRequest } from './data';
 import HelpButton from './widgets/HelpButton';
@@ -144,7 +146,7 @@ export function LoadTesting() {
    */
   React.useEffect(() => {
     if (!sseInstance) {
-      // console.log('Setup SSE...');
+      // console.log('Setup SSE...');  // TODO
       const sse = new EventSource(API_URL + '/print/sse?userId=' + USER_ID.toString());
       setSseInstance(sse);
       sse.addEventListener('open', () => {
