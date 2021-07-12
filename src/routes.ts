@@ -1,8 +1,8 @@
-import { RouteChildren, RouteNode } from './routing';
+import { RouteChildren, RouteNode } from './util/routing';
 
 import { API_URL } from './util/constants';
 
-import HomePage from './Home/Page';
+import HomePage from './home/Page';
 import NotFound from './util/widgets/NotFound';
 import { List as TemplateTypesList } from './template-types/pages/List';
 import { Card as TemplateTypeCard } from './template-types/pages/Card';

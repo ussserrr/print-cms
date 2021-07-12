@@ -12,7 +12,7 @@ import type { RouterTitleProps } from 'react-router-title';
 
 import _ from 'lodash';
 
-import { getTemplateTypeById } from './template-types/data';
+import { getTemplateTypeById } from '../template-types/data';
 
 
 export type RouteNode = {

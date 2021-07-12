@@ -5,7 +5,6 @@ import type { History } from 'history';
 
 import type { StyleObject } from 'styletron-standard';
 import { Navigation } from 'baseui/side-navigation';
-import { HeaderNavigation, ALIGN, StyledNavigationList, StyledNavigationItem } from 'baseui/header-navigation';
 import { Button } from 'baseui/button';
 import { Modal, ModalBody, ModalHeader } from 'baseui/modal';
 import { StatefulMenu } from 'baseui/menu';
@@ -142,12 +141,6 @@ export function Navigator({ style, match, history }: Props) {
         }}
       />
 
-    : <HeaderNavigation>
-        <StyledNavigationList>
-          <StyledNavigationItem $align={ALIGN.left}>
-            <MobileMenu history={history} />
-          </StyledNavigationItem>
-        </StyledNavigationList>
-      </HeaderNavigation>
+    : <MobileMenu history={history} />
   );
 }
