@@ -2,6 +2,7 @@ import React from 'react';
 
 import { TableBuilder, TableBuilderColumn } from 'baseui/table-semantic';
 import { Checkbox } from 'baseui/checkbox';
+import { Paragraph3 } from 'baseui/typography';
 
 import { CombinedError } from 'urql';
 
@@ -12,6 +13,8 @@ import _ from 'lodash';
 import * as gqlSchema from 'src/graphql-schema';
 import { ServiceConfigContext } from 'src/service-config/data';
 import Loader from 'src/util/widgets/Loader';
+import ErrorsList from 'src/util/widgets/ErrorsList';
+
 import { Actions } from './Actions';
 
 
@@ -54,12 +57,13 @@ export function Table({
       isLoading={isLoading}
       emptyMessage={
         error
-        ? <span style={{color: 'negative'}}>{error.message}</span>
-        : <span style={{color: 'GrayText'}}>
+        ? <ErrorsList error={error} />
+        : <Paragraph3 $style={{ color: 'GrayText', margin: 0 }}>
             У данного шаблона нет файлов. Добавьте один с помощью кнопки выше.
             Пустые шаблоны по-умолчанию неактивны и не показываются в выдаче на печать.
-            Допускается хранение до {filesToKeep} файлов на один шаблон, далее самые старые файлы будут вытеснены
-          </span>
+            Допускается хранение до {filesToKeep} файлов на один шаблон, далее самые
+            старые файлы будут вытеснены
+          </Paragraph3>
       }
       loadingMessage={<Loader/>}
       overrides={{
